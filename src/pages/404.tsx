@@ -5,7 +5,8 @@ import Header from '../components/header'
 
 const E404: React.FC = () => {
 	return (
-		<>
+		// TEMP
+		<div className="flex flex-col justify-between h-screen">
 			<Head>
 				<title>404 - {process.env.NEXT_PUBLIC_NAME}</title>
 			</Head>
@@ -13,7 +14,7 @@ const E404: React.FC = () => {
 			<Header />
 
 			<main className="container mx-auto px-6">
-				<div className="flex items-center justify-center gap-3 my-24">
+				<div className="flex items-center justify-center gap-3">
 					<div className="font-bold text-lg">404</div>
 
 					<div className="border h-12"></div>
@@ -23,7 +24,7 @@ const E404: React.FC = () => {
 			</main>
 
 			<Footer />
-		</>
+		</div>
 	)
 }
 
