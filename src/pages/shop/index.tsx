@@ -1,3 +1,4 @@
+import { useRouter } from 'next/dist/client/router'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -8,7 +9,7 @@ import Header from '../../components/header'
 import ScrollTop from '../../components/scrollTop'
 
 const Shop: React.FC = () => {
-	//
+	const router = useRouter()
 
 	return (
 		<>
@@ -54,7 +55,7 @@ const Shop: React.FC = () => {
 									type="button"
 									className="p-2 focus:border-gray-400 focus:outline-none
 											focus:shadow-outline rounded border"
-									onClick={() => {}}
+									onClick={() => router.push(`/shop/cart`)}
 								>
 									<span className="font-sans text-gray-700 uppercase">Comprar agora</span>
 								</button>

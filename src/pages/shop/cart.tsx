@@ -1,14 +1,18 @@
+import { useRouter } from 'next/dist/client/router'
 import Head from 'next/head'
 import Image from 'next/image'
 import React, { useState } from 'react'
 import { FaCreditCard, FaGift, FaRegTrashAlt } from 'react-icons/fa'
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
+
 import CepCard from '../../components/cepCard'
 import Footer from '../../components/footer'
 import Header from '../../components/header'
 import ScrollTop from '../../components/scrollTop'
 
 const Cart: React.FC = () => {
+	const router = useRouter()
+
 	const [cupomCardState, setCupomCardState] = useState(false)
 
 	return (
@@ -111,7 +115,10 @@ const Cart: React.FC = () => {
 														</div>
 													</div>
 
-													<div className="flex gap-2 sm:items-end justify-end flex-1 sm:flex-none flex-wrap">
+													<div
+														className="flex gap-2 sm:items-end justify-end flex-1 sm:flex-none
+														flex-wrap"
+													>
 														<button
 															type="button"
 															className="flex items-center gap-1 p-1 uppercase text-gray-600
@@ -141,7 +148,7 @@ const Cart: React.FC = () => {
 															className="flex items-center gap-1 p-1 uppercase text-gray-600
 															text-xs font-extralight transition-colors duration-300
 															hover:text-green-600 border rounded-md whitespace-nowrap"
-															onClick={() => {}}
+															onClick={() => router.push(`/shop/xxx-${product}`)}
 														>
 															<svg
 																className="h-6 w-6"
@@ -221,7 +228,7 @@ const Cart: React.FC = () => {
 								className="flex items-center justify-center gap-3 p-3 border rounded-md text-gray-600
 								hover:text-gray-900 hover:border-gray-300 hover:bg-gray-200 transition-colors
 								duration-300 mt-3 bg-gray-100"
-								onClick={() => {}}
+								onClick={() => router.push(`/shop/checkout`)}
 							>
 								<FaCreditCard />
 
