@@ -7,9 +7,12 @@ import CepCard from '../../../components/cepCard'
 import Footer from '../../../components/footer'
 import Header from '../../../components/header'
 import ScrollTop from '../../../components/scrollTop'
+import { useCart } from '../../../contexts/cart'
+import { formatCurrency } from '../../../utils/formatCurrency'
 
 const ProductPage: React.FC = () => {
 	const router = useRouter()
+	const { addItemToCart } = useCart()
 
 	return (
 		<>
@@ -160,7 +163,9 @@ const ProductPage: React.FC = () => {
 							</div>
 
 							<div className="">
-								<span className="font-sans text-3xl cursor-default select-none mt-2">R$ 12,50</span>
+								<span className="font-sans text-3xl cursor-default select-none mt-2">
+									{formatCurrency(12.69)}
+								</span>
 							</div>
 
 							<div className="">
@@ -187,7 +192,18 @@ const ProductPage: React.FC = () => {
 									className="flex items-center justify-center gap-3 p-3 border rounded-md text-gray-600
 									hover:text-gray-900 hover:border-gray-300 hover:bg-gray-200 transition-colors
 									duration-300 mt-3 bg-gray-200"
-									onClick={() => router.push(`/shop/cart#${router.query?.slug}`)}
+									onClick={() => {
+										addItemToCart({
+											uid: 'd6f475bd-5a74-48b6-8b94-4045dc0ceb2c',
+											name: `PRODUCT TEST #d6f475bd-5a74-48b6-8b94-4045dc0ceb2c`,
+											desc: `PRODUCT DESCRIPTION - d6f475bd-5a74-48b6-8b94-4045dc0ceb2c`,
+											image: 'product-image-placeholder.jpg',
+											price: 121.6,
+											quant: 1
+										})
+
+										return router.push(`/shop/cart#${router.query?.slug}`)
+									}}
 								>
 									Comprar agora
 								</button>
@@ -197,7 +213,16 @@ const ProductPage: React.FC = () => {
 									className="flex items-center justify-center gap-3 p-3 border rounded-md text-gray-600
 									hover:text-gray-900 hover:border-gray-300 hover:bg-gray-200 transition-colors
 									duration-300 mt-3 bg-gray-100"
-									onClick={() => {}}
+									onClick={() =>
+										addItemToCart({
+											uid: 'd6f475bd-5a74-48b6-8b94-4045dc0ceb2c',
+											name: `PRODUCT TEST #d6f475bd-5a74-48b6-8b94-4045dc0ceb2c`,
+											desc: `PRODUCT DESCRIPTION - d6f475bd-5a74-48b6-8b94-4045dc0ceb2c`,
+											image: 'product-image-placeholder.jpg',
+											price: 121.6,
+											quant: 1
+										})
+									}
 								>
 									Adicionar ao Carrinho
 								</button>

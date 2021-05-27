@@ -7,6 +7,8 @@ interface AxiosCepResponse extends CepResponse {
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse): Promise<AxiosCepResponse | void> => {
+	res.setHeader('Cache-Control', 'max-age=0, s-maxage=86400, stale-while-revalidate, public')
+
 	try {
 		const { cep } = req.query
 

@@ -7,9 +7,12 @@ import React from 'react'
 import Footer from '../../components/footer'
 import Header from '../../components/header'
 import ScrollTop from '../../components/scrollTop'
+import { useCart } from '../../contexts/cart'
+import { formatCurrency } from '../../utils/formatCurrency'
 
 const Shop: React.FC = () => {
 	const router = useRouter()
+	const { addItemToCart } = useCart()
 
 	return (
 		<>
@@ -21,7 +24,7 @@ const Shop: React.FC = () => {
 
 			<main className="container mx-auto px-6">
 				<section className="flex flex-wrap gap-3 justify-center py-6">
-					{[...new Array(12).keys()].map(product => (
+					{[...new Array(4).keys()].map(product => (
 						<div
 							className="border shadow-md rounded-md w-64 hover:bg-gray-50 group transition duration-300
 							bg-white"
@@ -41,11 +44,11 @@ const Shop: React.FC = () => {
 									</div>
 
 									<div className="flex flex-col gap-1 p-3">
-										<div className="font-bold font-serif text-gray-800">PRODUCT NAME</div>
+										<div className="font-bold font-sans text-gray-700">PRODUCT TEST #{product}</div>
 
-										<div className="text-gray-700">PRODUCT DESCRIPTION</div>
+										<div className="text-gray-600">PRODUCT DESCRIPTION - {product}</div>
 
-										<div className="text-gray-600">R$ 12,50</div>
+										<div className="text-gray-700">{formatCurrency(12.5)}</div>
 									</div>
 								</a>
 							</Link>
@@ -55,7 +58,18 @@ const Shop: React.FC = () => {
 									type="button"
 									className="p-2 focus:border-gray-400 focus:outline-none
 											focus:shadow-outline rounded border"
-									onClick={() => router.push(`/shop/cart`)}
+									onClick={() => {
+										addItemToCart({
+											uid: product.toString(),
+											name: `PRODUCT TEST #${product}`,
+											desc: `PRODUCT DESCRIPTION - ${product}`,
+											image: 'product-image-placeholder.jpg',
+											price: 12.5,
+											quant: 1
+										})
+
+										return router.push(`/shop/cart`)
+									}}
 								>
 									<span className="font-sans text-gray-700 uppercase">Comprar agora</span>
 								</button>
@@ -63,7 +77,16 @@ const Shop: React.FC = () => {
 								<button
 									type="button"
 									className="p-2 focus:border-gray-400 focus:outline-none focus:shadow-outline rounded border"
-									onClick={() => {}}
+									onClick={() =>
+										addItemToCart({
+											uid: product.toString(),
+											name: `PRODUCT TEST #${product}`,
+											desc: `PRODUCT DESCRIPTION - ${product}`,
+											image: 'product-image-placeholder.jpg',
+											price: 12.5,
+											quant: 1
+										})
+									}
 								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"

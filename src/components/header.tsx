@@ -3,8 +3,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
 
+import { useCart } from '../contexts/cart'
+import { formatCurrency } from '../utils/formatCurrency'
+
 const Header: React.FC = () => {
 	const router = useRouter()
+	const { items, addItemToCart } = useCart()
 
 	const [menuCartOpen, setMenuCartOpen] = useState(false)
 
@@ -31,7 +35,7 @@ const Header: React.FC = () => {
 											className="absolute text-xs rounded-full -mt-1 -mr-2 px-1 font-bold top-0
 										right-0 bg-red-700 text-white"
 										>
-											16
+											{items.length}
 										</div>
 
 										<svg
@@ -160,30 +164,35 @@ const Header: React.FC = () => {
 							</div>
 
 							<ul className="flex-1 flex flex-col gap-1 overflow-y-auto">
-								{[...new Array(14).keys()].map(product => (
-									<li className="border-b" key={product}>
+								{items.map(product => (
+									<li className="border-b" key={product.uid}>
 										<div className="flex gap-3 hover:bg-gray-50 cursor-pointer">
 											<div className="relative flex-shrink-0 w-20 h-20 place-self-center">
 												<Image
-													src="/shop/gallery/product-image-placeholder.jpg"
+													src={`/shop/gallery/${product.image}`}
 													layout="fill"
 													objectFit="contain"
 													quality={100}
-													alt="xxx"
+													alt={product.name}
 												/>
 											</div>
 
 											<div className="flex-1 py-1">
-												<div className="font-sans">PRODUCT NAME</div>
+												<div className="font-sans text-gray-700">{product.name}</div>
 
 												<div className="text-gray-500 truncate w-60 sm:w-48">
-													PRODUCT DESCRIPTIONxxxxxxxxxxxxxxx dwqidjwqdjhqwkijhdkj
-													hjwhdqkjqwhdjkqwdhjksad jaskjdghkasjdsahdhghasgdga
+													{product.desc}
 												</div>
 
 												<div className="flex justify-between flex-col sm:flex-row">
 													<div className="flex items-center gap-2 mt-1">
-														<button type="button" className="" onClick={() => {}}>
+														<button
+															type="button"
+															className=""
+															onClick={() =>
+																addItemToCart({ uid: product.uid, quant: -1 })
+															}
+														>
 															<svg
 																xmlns="http://www.w3.org/2000/svg"
 																className="h-6 w-6 text-gray-500"
@@ -200,9 +209,15 @@ const Header: React.FC = () => {
 															</svg>
 														</button>
 
-														<div className="">632</div>
+														<div className="">{product.quant}</div>
 
-														<button type="button" className="" onClick={() => {}}>
+														<button
+															type="button"
+															className=""
+															onClick={() =>
+																addItemToCart({ uid: product.uid, quant: 1 })
+															}
+														>
 															<svg
 																xmlns="http://www.w3.org/2000/svg"
 																className="h-6 w-6 text-gray-500"
@@ -221,7 +236,7 @@ const Header: React.FC = () => {
 													</div>
 
 													<div className="py-1 px-2 whitespace-nowrap text-right">
-														<div className="">R$ 12,50</div>
+														<div className="">{formatCurrency(product.price)}</div>
 													</div>
 												</div>
 											</div>
@@ -230,15 +245,17 @@ const Header: React.FC = () => {
 								))}
 							</ul>
 
-							<button
-								type="button"
-								className="flex items-center justify-center gap-3 p-3 border rounded-md text-gray-600
-							hover:text-gray-900 hover:border-gray-300 hover:bg-gray-200 transition-colors
-							duration-300 bg-gray-100 font-bold"
-								onClick={() => router.push('/shop/cart')}
-							>
-								{'CARRINHO -->'}
-							</button>
+							{items.length > 0 && (
+								<button
+									type="button"
+									className="flex items-center justify-center gap-3 p-3 border rounded-md text-gray-600
+									hover:text-gray-900 hover:border-gray-300 hover:bg-gray-200 transition-colors
+									duration-300 bg-gray-100 font-bold"
+									onClick={() => router.push('/shop/cart')}
+								>
+									{'CARRINHO -->'}
+								</button>
+							)}
 						</div>
 					</div>
 				</div>

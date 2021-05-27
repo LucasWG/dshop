@@ -9,9 +9,12 @@ import CepCard from '../../components/cepCard'
 import Footer from '../../components/footer'
 import Header from '../../components/header'
 import ScrollTop from '../../components/scrollTop'
+import { useCart } from '../../contexts/cart'
+import { formatCurrency } from '../../utils/formatCurrency'
 
 const Cart: React.FC = () => {
 	const router = useRouter()
+	const { items, addItemToCart, removeItemToCart } = useCart()
 
 	const [cupomCardState, setCupomCardState] = useState(false)
 
@@ -28,41 +31,38 @@ const Cart: React.FC = () => {
 					<section className="flex-1 flex flex-col gap-3">
 						<div className="flex flex-col gap-6 bg-white rounded-md p-6 border">
 							<div className="text-xl font-bold font-serif text-gray-700 cursor-default">
-								Cart (2 Items)
+								Cart ({items.length > 1 ? `${items.length} Items` : `${items.length} Item`})
 							</div>
 
 							<ul className="flex flex-col gap-9">
-								{[...new Array(10).keys()].map(product => (
-									<li key={product}>
+								{items.map(product => (
+									<li key={product.uid}>
 										<div className="flex gap-4 flex-wrap justify-center">
 											<div className="relative h-48 w-full sm:w-40 border rounded-md bg-gray-200">
 												<Image
-													src="/shop/gallery/product-image-placeholder.jpg"
+													src={`/shop/gallery/${product.image}`}
 													// src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixid=
 													// MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=
 													// format&fit=crop&w=1050&q=80"
 													className="rounded-md"
 													layout="fill"
 													objectFit="cover"
-													alt="xxx"
+													alt={product.name}
 												/>
 											</div>
 
 											<div className="flex-1 flex flex-col gap-3">
 												<div className="flex flex-col gap-2">
 													<div className="font-sans text-xl text-gray-700">
-														Nome do produto - Lorem ipsum dolor sit
+														{product.name}
 													</div>
 
 													<div className="font-bold font-sans text-2xl whitespace-nowrap">
-														R$ 12,50
+														{formatCurrency(product.price)}
 													</div>
 												</div>
 
-												<div className="flex-1 text-gray-600">
-													DESCRIPTION - Lorem ipsum dolor sit amet consectetur, adipisicing
-													elit. Ipsa laboriosam impedit, veritatis dolore quibusdam incidunt.
-												</div>
+												<div className="flex-1 text-gray-600">{product.desc}</div>
 
 												<div className="flex gap-3 justify-center md:justify-between flex-wrap">
 													<div className="flex items-center flex-wrap gap-1">
@@ -70,7 +70,9 @@ const Cart: React.FC = () => {
 															<button
 																type="button"
 																className="p-1 border rounded"
-																onClick={() => {}}
+																onClick={() =>
+																	addItemToCart({ uid: product.uid, quant: -1 })
+																}
 															>
 																<svg
 																	className="h-6 w-6"
@@ -87,12 +89,14 @@ const Cart: React.FC = () => {
 																</svg>
 															</button>
 
-															<div className="p-1 cursor-default">999</div>
+															<div className="p-1 cursor-default">{product.quant}</div>
 
 															<button
 																type="button"
 																className="p-1 border rounded"
-																onClick={() => {}}
+																onClick={() =>
+																	addItemToCart({ uid: product.uid, quant: 1 })
+																}
 															>
 																<svg
 																	className="h-6 w-6"
@@ -124,7 +128,7 @@ const Cart: React.FC = () => {
 															className="flex items-center gap-1 p-1 uppercase text-gray-600
 															text-xs font-extralight transition-colors duration-300
 															hover:text-red-600 border rounded-md whitespace-nowrap order-last"
-															onClick={() => {}}
+															onClick={() => removeItemToCart(product.uid)}
 														>
 															<svg
 																className="h-5 w-5 mb-1"
@@ -148,7 +152,7 @@ const Cart: React.FC = () => {
 															className="flex items-center gap-1 p-1 uppercase text-gray-600
 															text-xs font-extralight transition-colors duration-300
 															hover:text-green-600 border rounded-md whitespace-nowrap"
-															onClick={() => router.push(`/shop/xxx-${product}`)}
+															onClick={() => router.push(`/shop/${product.uid}`)}
 														>
 															<svg
 																className="h-6 w-6"
@@ -178,6 +182,14 @@ const Cart: React.FC = () => {
 										</div>
 									</li>
 								))}
+
+								{items.length === 0 && (
+									<li>
+										<div className="text-center my-10 text-2xl text-gray-600 font-mono">
+											Empty cart
+										</div>
+									</li>
+								)}
 							</ul>
 						</div>
 					</section>
