@@ -1,7 +1,9 @@
 import axios from 'axios'
 import { CepResponse, PrecoPrazoEvent } from 'correios-brasil/dist'
 import React, { useEffect, useState } from 'react'
+
 import { getShippingCodeName } from '../utils/correios'
+import { formatCurrency, formatCurrencyToValue } from '../utils/formatCurrency'
 
 interface ICorreiosPrecoPrazo extends PrecoPrazoEvent {
 	Nome: string
@@ -22,7 +24,7 @@ const CepCard: React.FC = () => {
 			const cepResponse = await axios.get<CepResponse>(`/api/cep-validate`, { params: { cep } })
 
 			const productShippingArgs = {
-				sCepOrigem: '96820-990',
+				sCepOrigem: '96817-000',
 				sCepDestino: cep,
 				nVlPeso: '1',
 				nCdFormato: '1',
@@ -44,7 +46,9 @@ const CepCard: React.FC = () => {
 				}
 			})
 
-			calculateShippingData = calculateShippingData.sort((a, b) => a.Valor.localeCompare(b.Valor))
+			calculateShippingData = calculateShippingData.sort(
+				(a, b) => (formatCurrencyToValue(a.Valor) > formatCurrencyToValue(b.Valor) && 1) || -1
+			)
 
 			localStorage.setItem('_DS_CEP', cepResponse.data.cep)
 
@@ -141,7 +145,7 @@ const CepCard: React.FC = () => {
 									{Number(_shipping.PrazoEntrega) === 1 ? 'dia útil' : 'dias úteis'}
 								</span>
 
-								<span className="align-middle">R$ {_shipping.Valor}</span>
+								<span className="align-middle">{formatCurrency(_shipping.Valor)}</span>
 							</div>
 						</div>
 					))}
@@ -173,7 +177,11 @@ const CepCard: React.FC = () => {
 					/>
 
 					{cepInputLoading ? (
-						<button type="submit" className="absolute inset-y-0 right-0 px-4 focus:outline-none border-l">
+						<button
+							type="button"
+							className="absolute inset-y-0 right-0 px-4 focus:outline-none border-l"
+							disabled={cepInputLoading}
+						>
 							<svg
 								className="animate-spin -ml-1x mr-3x h-6 w-6 text-gray-700"
 								xmlns="http://www.w3.org/2000/svg"
@@ -196,7 +204,11 @@ const CepCard: React.FC = () => {
 							</svg>
 						</button>
 					) : (
-						<button type="submit" className="absolute inset-y-0 right-0 px-4 focus:outline-none border-l">
+						<button
+							type="submit"
+							className="absolute inset-y-0 right-0 px-4 focus:outline-none border-l"
+							disabled={cepInputLoading}
+						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								className="h-6 w-6 text-gray-700"
