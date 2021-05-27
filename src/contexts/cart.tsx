@@ -7,6 +7,7 @@ type Item = {
 	image?: string
 	price?: number
 	quant: number
+	available: number
 }
 
 type CartContextData = {
@@ -30,6 +31,8 @@ export const CartContextProvider: React.FC = ({ children }) => {
 		if (existingItem !== -1) {
 			let newQuant = newItems[existingItem].quant + item.quant
 
+			newQuant = newQuant > item.available ? item.available : newQuant
+
 			if (newQuant === 0) {
 				let newItemsFiltered = newItems.filter((_, index) => index !== existingItem)
 
@@ -44,7 +47,7 @@ export const CartContextProvider: React.FC = ({ children }) => {
 		setItems(newItems)
 	}
 
-	const removeItemToCart = (uid: string) => {
+	const removeItemToCart = async (uid: string) => {
 		let newItemsFiltered = items.filter(value => value.uid !== uid)
 
 		setItems(newItemsFiltered)

@@ -2,7 +2,7 @@ import { useRouter } from 'next/dist/client/router'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import Footer from '../../components/footer'
 import Header from '../../components/header'
@@ -10,9 +10,46 @@ import ScrollTop from '../../components/scrollTop'
 import { useCart } from '../../contexts/cart'
 import { formatCurrency } from '../../utils/formatCurrency'
 
+type MockProduct = {
+	uid: string
+	name: string
+	desc: string
+	image: string
+	price: number
+	quant: number
+	available: number
+}
+
 const Shop: React.FC = () => {
 	const router = useRouter()
 	const { addItemToCart } = useCart()
+
+	const [mockItem, setMockItem] = useState<MockProduct[]>([])
+
+	useEffect(() => {
+		const generateNum = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min
+
+		let mp = []
+
+		let i = 0
+		while (i < 3) {
+			let uid = generateNum(1000000000000000000, 9999999999999999999)
+
+			mp.push({
+				uid: uid,
+				name: uid,
+				desc: `PRODUCT DESCRIPTION`,
+				image: 'product-image-placeholder.jpg',
+				price: +(Math.random() * (0.0 - 999.99) + 1).toFixed(2) * -1,
+				quant: 1,
+				available: generateNum(0, 30)
+			})
+
+			i++
+		}
+
+		setMockItem(mp)
+	}, [])
 
 	return (
 		<>
@@ -24,17 +61,17 @@ const Shop: React.FC = () => {
 
 			<main className="container mx-auto px-6">
 				<section className="flex flex-wrap gap-3 justify-center py-6">
-					{[...new Array(4).keys()].map(product => (
+					{mockItem.map(product => (
 						<div
 							className="border shadow-md rounded-md w-64 hover:bg-gray-50 group transition duration-300
 							bg-white"
-							key={product}
+							key={product.uid}
 						>
-							<Link href={`/shop/xxx-${product + 1}`}>
+							<Link href={`/shop/${product.uid}`}>
 								<a>
 									<div className="relative h-48 border-b rounded-t">
 										<Image
-											src="/shop/gallery/product-image-placeholder.jpg"
+											src={`/shop/gallery/${product.image}`}
 											className="rounded-t group-hover:opacity-90"
 											layout="fill"
 											objectFit="cover"
@@ -44,11 +81,11 @@ const Shop: React.FC = () => {
 									</div>
 
 									<div className="flex flex-col gap-1 p-3">
-										<div className="font-bold font-sans text-gray-700">PRODUCT TEST #{product}</div>
+										<div className="font-bold font-sans text-gray-700">{product.name}</div>
 
-										<div className="text-gray-600">PRODUCT DESCRIPTION - {product}</div>
+										<div className="text-gray-600">{product.desc}</div>
 
-										<div className="text-gray-700">{formatCurrency(12.5)}</div>
+										<div className="text-gray-700">{formatCurrency(product.price)}</div>
 									</div>
 								</a>
 							</Link>
@@ -59,14 +96,7 @@ const Shop: React.FC = () => {
 									className="p-2 focus:border-gray-400 focus:outline-none
 											focus:shadow-outline rounded border"
 									onClick={() => {
-										addItemToCart({
-											uid: product.toString(),
-											name: `PRODUCT TEST #${product}`,
-											desc: `PRODUCT DESCRIPTION - ${product}`,
-											image: 'product-image-placeholder.jpg',
-											price: 12.5,
-											quant: 1
-										})
+										addItemToCart(product)
 
 										return router.push(`/shop/cart`)
 									}}
@@ -77,16 +107,7 @@ const Shop: React.FC = () => {
 								<button
 									type="button"
 									className="p-2 focus:border-gray-400 focus:outline-none focus:shadow-outline rounded border"
-									onClick={() =>
-										addItemToCart({
-											uid: product.toString(),
-											name: `PRODUCT TEST #${product}`,
-											desc: `PRODUCT DESCRIPTION - ${product}`,
-											image: 'product-image-placeholder.jpg',
-											price: 12.5,
-											quant: 1
-										})
-									}
+									onClick={() => addItemToCart(product)}
 								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"

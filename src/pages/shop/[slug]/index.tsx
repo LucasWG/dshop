@@ -1,7 +1,7 @@
 import { useRouter } from 'next/dist/client/router'
 import Head from 'next/head'
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react'
 
 import CepCard from '../../../components/cepCard'
 import Footer from '../../../components/footer'
@@ -13,6 +13,16 @@ import { formatCurrency } from '../../../utils/formatCurrency'
 const ProductPage: React.FC = () => {
 	const router = useRouter()
 	const { addItemToCart } = useCart()
+
+	const [mockItem, setMockItem] = useState({
+		uid: 'd6f475bd-5a74-48b6-8b94-4045dc0ceb2c',
+		name: `PRODUCT TEST #d6f475bd-5a74-48b6-8b94-4045dc0ceb2c`,
+		desc: `PRODUCT DESCRIPTION - d6f475bd-5a74-48b6-8b94-4045dc0ceb2c`,
+		image: 'product-image-placeholder.jpg',
+		price: 121.6,
+		quant: 1,
+		available: 8
+	})
 
 	return (
 		<>
@@ -158,30 +168,51 @@ const ProductPage: React.FC = () => {
 
 					<section className="flex flex-col w-full md:w-4/12 gap-3 p-3">
 						<section className="flex flex-col gap-6 break-all">
-							<div className="">
+							<div className="mb-2">
 								<h1>Vela 7 Dias Branco 260g 5x15cm</h1>
 							</div>
 
-							<div className="">
-								<span className="font-sans text-3xl cursor-default select-none mt-2">
-									{formatCurrency(12.69)}
-								</span>
-							</div>
-
-							<div className="">
-								<p>Estoque disponível</p>
-
-								<div className="flex gap-2 items-center mt-2">
-									<select name="" id="" className="flex-1 p-2 appearance-none">
-										{[...new Array(26).keys()].map(value => (
-											<option value={value + 1} key={value}>
-												{value + 1}
-											</option>
-										))}
-									</select>
-
-									<span className="">(26 disponíveis)</span>
+							{!!mockItem.available && (
+								<div className="">
+									<span className="font-sans text-3xl cursor-default select-none mt-2">
+										{formatCurrency(mockItem.price)}
+									</span>
 								</div>
+							)}
+
+							<div className="">
+								{!!mockItem.available ? (
+									<p className="">Estoque disponível</p>
+								) : (
+									<p className="text-red-800">indisponível</p>
+								)}
+
+								{!!mockItem.available && (
+									<>
+										<div className="flex gap-2 items-center mt-2">
+											<select
+												name=""
+												id=""
+												className="flex-1 p-2 appearance-none"
+												onChange={event =>
+													setMockItem({ ...mockItem, quant: Number(event.target.value) })
+												}
+											>
+												{[...new Array(mockItem.available).keys()].map(value => (
+													<option value={value + 1} key={value}>
+														{value + 1}
+													</option>
+												))}
+											</select>
+
+											<span className="font-extralight text-sm text-gray-500">
+												{mockItem.available > 1
+													? `(${mockItem.available} disponíveis)`
+													: `(${mockItem.available} disponível)`}
+											</span>
+										</div>
+									</>
+								)}
 							</div>
 
 							<CepCard />
@@ -193,14 +224,7 @@ const ProductPage: React.FC = () => {
 									hover:text-gray-900 hover:border-gray-300 hover:bg-gray-200 transition-colors
 									duration-300 mt-3 bg-gray-200"
 									onClick={() => {
-										addItemToCart({
-											uid: 'd6f475bd-5a74-48b6-8b94-4045dc0ceb2c',
-											name: `PRODUCT TEST #d6f475bd-5a74-48b6-8b94-4045dc0ceb2c`,
-											desc: `PRODUCT DESCRIPTION - d6f475bd-5a74-48b6-8b94-4045dc0ceb2c`,
-											image: 'product-image-placeholder.jpg',
-											price: 121.6,
-											quant: 1
-										})
+										addItemToCart(mockItem)
 
 										return router.push(`/shop/cart#${router.query?.slug}`)
 									}}
@@ -213,16 +237,7 @@ const ProductPage: React.FC = () => {
 									className="flex items-center justify-center gap-3 p-3 border rounded-md text-gray-600
 									hover:text-gray-900 hover:border-gray-300 hover:bg-gray-200 transition-colors
 									duration-300 mt-3 bg-gray-100"
-									onClick={() =>
-										addItemToCart({
-											uid: 'd6f475bd-5a74-48b6-8b94-4045dc0ceb2c',
-											name: `PRODUCT TEST #d6f475bd-5a74-48b6-8b94-4045dc0ceb2c`,
-											desc: `PRODUCT DESCRIPTION - d6f475bd-5a74-48b6-8b94-4045dc0ceb2c`,
-											image: 'product-image-placeholder.jpg',
-											price: 121.6,
-											quant: 1
-										})
-									}
+									onClick={() => addItemToCart(mockItem)}
 								>
 									Adicionar ao Carrinho
 								</button>

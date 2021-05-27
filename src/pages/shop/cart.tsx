@@ -71,7 +71,11 @@ const Cart: React.FC = () => {
 																type="button"
 																className="p-1 border rounded"
 																onClick={() =>
-																	addItemToCart({ uid: product.uid, quant: -1 })
+																	addItemToCart({
+																		uid: product.uid,
+																		quant: -1,
+																		available: product.available
+																	})
 																}
 															>
 																<svg
@@ -95,7 +99,11 @@ const Cart: React.FC = () => {
 																type="button"
 																className="p-1 border rounded"
 																onClick={() =>
-																	addItemToCart({ uid: product.uid, quant: 1 })
+																	addItemToCart({
+																		uid: product.uid,
+																		quant: 1,
+																		available: product.available
+																	})
 																}
 															>
 																<svg
@@ -115,7 +123,9 @@ const Cart: React.FC = () => {
 														</div>
 
 														<div className="font-extralight text-sm text-gray-500">
-															(26 disponíveis)
+															{product.available > 1
+																? `(${product.available} disponíveis)`
+																: `(${product.available} disponível)`}
 														</div>
 													</div>
 

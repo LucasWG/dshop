@@ -8,5 +8,14 @@ module.exports = {
 	// },
 	images: {
 		domains: ['images.unsplash.com']
+	},
+	async redirects() {
+		return [
+			{
+				source: '/',
+				destination: '/shop',
+				permanent: true
+			}
+		]
 	}
 }

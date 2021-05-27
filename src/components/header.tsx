@@ -190,7 +190,11 @@ const Header: React.FC = () => {
 															type="button"
 															className=""
 															onClick={() =>
-																addItemToCart({ uid: product.uid, quant: -1 })
+																addItemToCart({
+																	uid: product.uid,
+																	quant: -1,
+																	available: product.available
+																})
 															}
 														>
 															<svg
@@ -215,7 +219,11 @@ const Header: React.FC = () => {
 															type="button"
 															className=""
 															onClick={() =>
-																addItemToCart({ uid: product.uid, quant: 1 })
+																addItemToCart({
+																	uid: product.uid,
+																	quant: 1,
+																	available: product.available
+																})
 															}
 														>
 															<svg
