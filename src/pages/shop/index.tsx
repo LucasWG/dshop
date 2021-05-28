@@ -1,28 +1,30 @@
-import { NextPage } from 'next'
+import { GetStaticProps, NextPage } from 'next'
 import { useRouter } from 'next/dist/client/router'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-import useSWR from 'swr'
 
 import Footer from '../../components/footer'
 import Header from '../../components/header'
 import ScrollTop from '../../components/scrollTop'
 import { useCart } from '../../contexts/cart'
+import { supabase } from '../../services/supabase'
 import { formatCurrency } from '../../utils/formatCurrency'
 import { definitions } from '../../utils/types/supabase'
 
-const Shop: NextPage = () => {
+type ShopProps = {
+	_products: definitions['_products'][]
+}
+
+const Shop: NextPage<ShopProps> = ({ _products }) => {
 	const router = useRouter()
 	const { addItemToCart } = useCart()
-
-	const { data: _products, error } = useSWR<definitions['_products'][]>('/api/shop/products')
 
 	return (
 		<>
 			<Head>
-				<title>{process.env.NEXT_PUBLIC_NAME}</title>
+				<title>Shop | {process.env.NEXT_PUBLIC_NAME}</title>
 			</Head>
 
 			<Header />
@@ -33,14 +35,14 @@ const Shop: NextPage = () => {
 						_products.map(product => (
 							<div
 								className="border shadow-md rounded-md w-64 hover:bg-gray-50 group transition duration-300
-							bg-white"
+								bg-white"
 								key={product.id}
 							>
-								<Link href={`/shop/${product.id}`}>
+								<Link href={`/shop/${product.slug}`}>
 									<a>
 										<div className="relative h-48 rounded-t">
 											<Image
-												src={`/shop/gallery/${product.image}`}
+												src={`/shop/gallery/${product.images[0]}`}
 												className="rounded-t group-hover:opacity-90"
 												layout="fill"
 												objectFit="cover"
@@ -62,17 +64,17 @@ const Shop: NextPage = () => {
 								<div className="flex justify-between p-3">
 									<button
 										type="button"
-										className="p-2 focus:border-gray-400 focus:outline-none
-											focus:shadow-outline rounded border"
+										className="p-2 focus:border-gray-400 focus:outline-none focus:shadow-outline
+										rounded border bg-white"
 										onClick={() => {
 											addItemToCart({
-												uid: product.id,
+												id: product.id,
+												slug: product.slug,
 												name: product.name,
-												desc: product.description,
+												images: product.images,
 												price: product.price,
-												image: product.image,
 												available: product.available,
-												quant: 1
+												amount: 1
 											})
 
 											return router.push(`/shop/cart`)
@@ -83,16 +85,17 @@ const Shop: NextPage = () => {
 
 									<button
 										type="button"
-										className="p-2 focus:border-gray-400 focus:outline-none focus:shadow-outline rounded border"
+										className="p-2 focus:border-gray-400 focus:outline-none focus:shadow-outline
+										rounded border bg-white"
 										onClick={() =>
 											addItemToCart({
-												uid: product.id,
+												id: product.id,
+												slug: product.slug,
 												name: product.name,
-												desc: product.description,
+												images: product.images,
 												price: product.price,
-												image: product.image,
 												available: product.available,
-												quant: 1
+												amount: 1
 											})
 										}
 									>
@@ -117,7 +120,7 @@ const Shop: NextPage = () => {
 
 					{!!!_products && (
 						<div className="my-9">
-							<h2>No Products found</h2>
+							<h2>We didn't find anything, check later!</h2>
 						</div>
 					)}
 				</section>
@@ -125,21 +128,26 @@ const Shop: NextPage = () => {
 
 			<ScrollTop />
 
-			{!!_products && (
+			{/* {!!_products && (
 				<pre className="whitespace-pre-wrap text-black bg-white font-sans border m-9 p-9 shadow rounded">
 					{JSON.stringify(_products, null, 4)}
 				</pre>
-			)}
+			)} */}
 
 			<Footer />
 		</>
 	)
 }
 
-// export const getServerSideProps: GetServerSideProps = async context => {
-// 	return {
-// 		props: {}
-// 	}
-// }
+export const getStaticProps: GetStaticProps = async context => {
+	let { data: _products, error } = await supabase
+		.from<definitions['_products']>('_products')
+		.select('id, slug, name, images, price, available')
+
+	return {
+		props: { _products },
+		revalidate: 10
+	}
+}
 
 export default Shop

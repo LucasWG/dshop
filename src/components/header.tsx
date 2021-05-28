@@ -8,9 +8,9 @@ import { formatCurrency } from '../utils/formatCurrency'
 
 const Header: React.FC = () => {
 	const router = useRouter()
-	const { items, addItemToCart } = useCart()
+	const { cartItems, addItemToCart } = useCart()
 
-	const [menuCartOpen, setMenuCartOpen] = useState(false)
+	const [menuCartOpen, setMenuCartOpen] = useState(true)
 
 	return (
 		<header className="pb-3">
@@ -35,7 +35,7 @@ const Header: React.FC = () => {
 											className="absolute text-xs rounded-full -mt-1 -mr-2 px-1 font-bold top-0
 										right-0 bg-red-700 text-white"
 										>
-											{items.length}
+											{cartItems.length}
 										</div>
 
 										<svg
@@ -164,12 +164,12 @@ const Header: React.FC = () => {
 							</div>
 
 							<ul className="flex-1 flex flex-col gap-1 overflow-y-auto">
-								{items.map(product => (
-									<li className="border-b" key={product.uid}>
+								{cartItems.map(product => (
+									<li className="border-b" key={product.id}>
 										<div className="flex gap-3 mb-3">
 											<div className="relative flex-shrink-0 w-20 h-20 place-self-center">
 												<Image
-													src={`/shop/gallery/${product.image}`}
+													src={`/shop/gallery/${product.images[0]}`}
 													layout="fill"
 													objectFit="contain"
 													quality={100}
@@ -178,8 +178,7 @@ const Header: React.FC = () => {
 											</div>
 
 											<div className="flex-1 flex flex-col justify-between py-1">
-												{/* TODO: MUDAR PARA SLUG */}
-												<Link href={`/shop/${product.uid}`}>
+												<Link href={`/shop/${product.slug}`}>
 													<a>
 														<div className="font-sans text-gray-700">{product.name}</div>
 													</a>
@@ -192,9 +191,13 @@ const Header: React.FC = () => {
 															className=""
 															onClick={() =>
 																addItemToCart({
-																	uid: product.uid,
-																	quant: -1,
-																	available: product.available
+																	id: product.id,
+																	slug: product.slug,
+																	name: product.name,
+																	images: product.images,
+																	price: product.price,
+																	available: product.available,
+																	amount: -1
 																})
 															}
 														>
@@ -214,16 +217,20 @@ const Header: React.FC = () => {
 															</svg>
 														</button>
 
-														<div className="">{product.quant}</div>
+														<div className="">{product.amount}</div>
 
 														<button
 															type="button"
 															className=""
 															onClick={() =>
 																addItemToCart({
-																	uid: product.uid,
-																	quant: 1,
-																	available: product.available
+																	id: product.id,
+																	slug: product.slug,
+																	name: product.name,
+																	images: product.images,
+																	price: product.price,
+																	available: product.available,
+																	amount: 1
 																})
 															}
 														>
@@ -254,7 +261,7 @@ const Header: React.FC = () => {
 								))}
 							</ul>
 
-							{items.length > 0 && (
+							{cartItems.length > 0 && (
 								<button
 									type="button"
 									className="flex items-center justify-center gap-3 p-3 border rounded-md text-gray-600

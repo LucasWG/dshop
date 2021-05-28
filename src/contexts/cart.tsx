@@ -1,59 +1,95 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 
-type Item = {
-	uid: string
-	name?: string
-	desc?: string
-	image?: string
-	price?: number
-	quant: number
+import { definitions } from '../utils/types/supabase'
+
+import currency from 'currency.js'
+
+import { formatCurrencyToValue } from '../utils/formatCurrency'
+
+type OrderDetails = {
+	subtotal: number
+	Coupon: number
+	tax: number
+	total: number
+}
+
+type Product = {
+	id: string
+	name: string
+	price: number
 	available: number
+	slug: string
+	images: string
+	amount: number
 }
 
 type CartContextData = {
-	items: Item[]
-	addItemToCart(item: Item): void
-	removeItemToCart(uid: string): void
+	cartItems: Product[]
+	orderDetails: OrderDetails
+	addItemToCart(product: Product): void
+	removeItemToCart(id: string): void
 }
 
 const CartContext = createContext<CartContextData>({} as CartContextData)
 
 export const CartContextProvider: React.FC = ({ children }) => {
-	const [items, setItems] = useState<Item[]>([])
+	const [cartItems, setCartItems] = useState<Product[]>([])
+	const [orderDetails, setOrderDetails] = useState<OrderDetails>({} as OrderDetails)
+	const [shippingSelected, setShippingSelected] = useState()
 
-	const addItemToCart = (item: Item) => {
-		// TODO: RECEBER APENAS O UID E QUANTIDADE
-		// TODO: BUSCAR PRODUTO NO BANCO PELO UID, PARA MANTER INFORMAÇÕES DO PRODUTO ATUALIZADAS.
+	const addItemToCart = (product: Product) => {
+		let existingItem = cartItems.findIndex(value => value.id === product.id)
 
-		let existingItem = items.findIndex(value => value.uid === item.uid)
-		let newItems = [...items]
+		let newItems = [...cartItems]
 
 		if (existingItem !== -1) {
-			let newQuant = newItems[existingItem].quant + item.quant
+			let newAmount = newItems[existingItem].amount + product.amount
 
-			newQuant = newQuant > item.available ? item.available : newQuant
+			newAmount = newAmount > product.available ? product.available : newAmount
 
-			if (newQuant === 0) {
+			if (newAmount === 0) {
 				let newItemsFiltered = newItems.filter((_, index) => index !== existingItem)
 
 				newItems = newItemsFiltered
 			} else {
-				newItems[existingItem] = { ...newItems[existingItem], quant: newQuant }
+				newItems[existingItem] = { ...newItems[existingItem], amount: newAmount }
 			}
 		} else {
-			newItems.push(item)
+			newItems.push(product)
 		}
 
-		setItems(newItems)
+		setCartItems(newItems)
 	}
 
-	const removeItemToCart = async (uid: string) => {
-		let newItemsFiltered = items.filter(value => value.uid !== uid)
+	const removeItemToCart = (id: string) => {
+		let newItemsFiltered = cartItems.filter(value => value.id !== id)
 
-		setItems(newItemsFiltered)
+		setCartItems(newItemsFiltered)
 	}
 
-	return <CartContext.Provider value={{ items, addItemToCart, removeItemToCart }}>{children}</CartContext.Provider>
+	const orderDetailsCalculate = () => {
+		const subtotal = cartItems.reduce((previousValue, currentValue) => {
+			let cValue = currency(currentValue.price)
+			let itemPriceTotal = cValue.multiply(currentValue.amount)
+			let sumWithPreviousValue = itemPriceTotal.add(previousValue).value
+
+			return sumWithPreviousValue
+		}, 0)
+
+		const total = subtotal
+
+		setOrderDetails(obj => {
+			return { ...obj, subtotal, total }
+		})
+	}
+
+	useEffect(orderDetailsCalculate, [cartItems])
+
+	return (
+		<CartContext.Provider value={{ cartItems, orderDetails, addItemToCart, removeItemToCart }}>
+			{children}
+		</CartContext.Provider>
+	)
 }
 
 export const useCart = () => useContext(CartContext)

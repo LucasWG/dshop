@@ -14,7 +14,7 @@ import { formatCurrency } from '../../utils/formatCurrency'
 
 const Cart: React.FC = () => {
 	const router = useRouter()
-	const { items, addItemToCart, removeItemToCart } = useCart()
+	const { cartItems, orderDetails, addItemToCart, removeItemToCart } = useCart()
 
 	const [cupomCardState, setCupomCardState] = useState(false)
 
@@ -31,19 +31,16 @@ const Cart: React.FC = () => {
 					<section className="flex-1 flex flex-col gap-3">
 						<div className="flex flex-col gap-6 bg-white rounded-md p-6 border">
 							<div className="text-xl font-bold font-serif text-gray-700 cursor-default">
-								Cart ({items.length > 1 ? `${items.length} Items` : `${items.length} Item`})
+								Cart ({cartItems.length > 1 ? `${cartItems.length} Items` : `${cartItems.length} Item`})
 							</div>
 
 							<ul className="flex flex-col gap-9">
-								{items.map(product => (
-									<li key={product.uid}>
+								{cartItems.map(product => (
+									<li key={product.id}>
 										<div className="flex gap-4 flex-wrap justify-center">
 											<div className="relative h-48 w-full sm:w-40 border rounded-md bg-gray-200">
 												<Image
-													src={`/shop/gallery/${product.image}`}
-													// src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixid=
-													// MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=
-													// format&fit=crop&w=1050&q=80"
+													src={`/shop/gallery/${product.images[0]}`}
 													className="rounded-md"
 													layout="fill"
 													objectFit="cover"
@@ -62,8 +59,6 @@ const Cart: React.FC = () => {
 													</div>
 												</div>
 
-												<div className="flex-1 text-gray-600">{product.desc}</div>
-
 												<div className="flex gap-3 justify-center md:justify-between flex-wrap">
 													<div className="flex items-center flex-wrap gap-1">
 														<div className="flex items-center gap-2">
@@ -72,9 +67,13 @@ const Cart: React.FC = () => {
 																className="p-1 border rounded"
 																onClick={() =>
 																	addItemToCart({
-																		uid: product.uid,
-																		quant: -1,
-																		available: product.available
+																		id: product.id,
+																		slug: product.slug,
+																		name: product.name,
+																		images: product.images,
+																		price: product.price,
+																		available: product.available,
+																		amount: -1
 																	})
 																}
 															>
@@ -93,16 +92,20 @@ const Cart: React.FC = () => {
 																</svg>
 															</button>
 
-															<div className="p-1 cursor-default">{product.quant}</div>
+															<div className="p-1 cursor-default">{product.amount}</div>
 
 															<button
 																type="button"
 																className="p-1 border rounded"
 																onClick={() =>
 																	addItemToCart({
-																		uid: product.uid,
-																		quant: 1,
-																		available: product.available
+																		id: product.id,
+																		slug: product.slug,
+																		name: product.name,
+																		images: product.images,
+																		price: product.price,
+																		available: product.available,
+																		amount: 1
 																	})
 																}
 															>
@@ -138,7 +141,7 @@ const Cart: React.FC = () => {
 															className="flex items-center gap-1 p-1 uppercase text-gray-600
 															text-xs font-extralight transition-colors duration-300
 															hover:text-red-600 border rounded-md whitespace-nowrap order-last"
-															onClick={() => removeItemToCart(product.uid)}
+															onClick={() => removeItemToCart(product.id)}
 														>
 															<svg
 																className="h-5 w-5 mb-1"
@@ -162,7 +165,7 @@ const Cart: React.FC = () => {
 															className="flex items-center gap-1 p-1 uppercase text-gray-600
 															text-xs font-extralight transition-colors duration-300
 															hover:text-green-600 border rounded-md whitespace-nowrap"
-															onClick={() => router.push(`/shop/${product.uid}`)}
+															onClick={() => router.push(`/shop/${product.slug}`)}
 														>
 															<svg
 																className="h-6 w-6"
@@ -193,7 +196,7 @@ const Cart: React.FC = () => {
 									</li>
 								))}
 
-								{items.length === 0 && (
+								{cartItems.length === 0 && (
 									<li>
 										<div className="text-center my-10 text-2xl text-gray-600 font-mono">
 											Empty cart
@@ -214,11 +217,11 @@ const Cart: React.FC = () => {
 								Frete e custos adicionais são calculados com base nos valores que você inseriu
 							</span>
 
-							<ul className="font-serif text-lg text-gray-600 font-bold">
+							<ul className="font-sans text-lg text-gray-700 font-bold">
 								<li>
 									<div className="flex justify-between p-4 border-b">
 										<div className="">Subtotal</div>
-										<div className="">R$ 100</div>
+										<div className="">{formatCurrency(orderDetails.subtotal)}</div>
 									</div>
 
 									<div className="flex justify-between items-center p-4 border-b">
@@ -235,12 +238,12 @@ const Cart: React.FC = () => {
 
 									<div className="flex justify-between p-4 border-b">
 										<div className="">Imposto</div>
-										<div className="">R$ 2</div>
+										<div className="">0</div>
 									</div>
 
 									<div className="flex justify-between p-4 border-b">
 										<div className="">Total</div>
-										<div className="">R$ 88</div>
+										<div className="">{formatCurrency(orderDetails.total)}</div>
 									</div>
 								</li>
 							</ul>
@@ -251,7 +254,7 @@ const Cart: React.FC = () => {
 									hover:text-gray-900 hover:border-gray-300 hover:bg-gray-200 transition-colors
 									duration-300 mt-3 bg-gray-100"
 								onClick={() => router.push(`/shop/checkout`)}
-								disabled={items.length === 0}
+								disabled={cartItems.length === 0}
 							>
 								<FaCreditCard />
 
