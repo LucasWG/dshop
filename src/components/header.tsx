@@ -166,7 +166,7 @@ const Header: React.FC = () => {
 							<ul className="flex-1 flex flex-col gap-1 overflow-y-auto">
 								{items.map(product => (
 									<li className="border-b" key={product.uid}>
-										<div className="flex gap-3 hover:bg-gray-50 cursor-pointer">
+										<div className="flex gap-3 mb-3">
 											<div className="relative flex-shrink-0 w-20 h-20 place-self-center">
 												<Image
 													src={`/shop/gallery/${product.image}`}
@@ -177,12 +177,13 @@ const Header: React.FC = () => {
 												/>
 											</div>
 
-											<div className="flex-1 py-1">
-												<div className="font-sans text-gray-700">{product.name}</div>
-
-												<div className="text-gray-500 truncate w-60 sm:w-48">
-													{product.desc}
-												</div>
+											<div className="flex-1 flex flex-col justify-between py-1">
+												{/* TODO: MUDAR PARA SLUG */}
+												<Link href={`/shop/${product.uid}`}>
+													<a>
+														<div className="font-sans text-gray-700">{product.name}</div>
+													</a>
+												</Link>
 
 												<div className="flex justify-between flex-col sm:flex-row">
 													<div className="flex items-center gap-2 mt-1">
