@@ -1,3 +1,4 @@
+import { GetStaticProps, NextPage } from 'next'
 import { useRouter } from 'next/dist/client/router'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -8,48 +9,17 @@ import Footer from '../../components/footer'
 import Header from '../../components/header'
 import ScrollTop from '../../components/scrollTop'
 import { useCart } from '../../contexts/cart'
+import { supabase } from '../../services/supabase'
 import { formatCurrency } from '../../utils/formatCurrency'
+import { definitions } from '../../utils/types/supabase'
 
-type MockProduct = {
-	uid: string
-	name: string
-	desc: string
-	image: string
-	price: number
-	quant: number
-	available: number
+type ShopProps = {
+	_products: definitions['_products'][]
 }
 
-const Shop: React.FC = () => {
+const Shop: NextPage<ShopProps> = ({ _products }) => {
 	const router = useRouter()
 	const { addItemToCart } = useCart()
-
-	const [mockItem, setMockItem] = useState<MockProduct[]>([])
-
-	useEffect(() => {
-		const generateNum = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min
-
-		let mp = []
-
-		let i = 0
-		while (i < 3) {
-			let uid = generateNum(1000000000000000000, 9999999999999999999)
-
-			mp.push({
-				uid: uid,
-				name: uid,
-				desc: `PRODUCT DESCRIPTION`,
-				image: 'product-image-placeholder.jpg',
-				price: +(Math.random() * (0.0 - 999.99) + 1).toFixed(2) * -1,
-				quant: 1,
-				available: generateNum(0, 30)
-			})
-
-			i++
-		}
-
-		setMockItem(mp)
-	}, [])
 
 	return (
 		<>
@@ -61,13 +31,13 @@ const Shop: React.FC = () => {
 
 			<main className="container mx-auto px-6">
 				<section className="flex flex-wrap gap-3 justify-center py-6">
-					{mockItem.map(product => (
+					{_products.map(product => (
 						<div
 							className="border shadow-md rounded-md w-64 hover:bg-gray-50 group transition duration-300
 							bg-white"
-							key={product.uid}
+							key={product.id}
 						>
-							<Link href={`/shop/${product.uid}`}>
+							<Link href={`/shop/${product.id}`}>
 								<a>
 									<div className="relative h-48 border-b rounded-t">
 										<Image
@@ -83,7 +53,7 @@ const Shop: React.FC = () => {
 									<div className="flex flex-col gap-1 p-3">
 										<div className="font-bold font-sans text-gray-700">{product.name}</div>
 
-										<div className="text-gray-600">{product.desc}</div>
+										<div className="text-gray-600">{product.description}</div>
 
 										<div className="text-gray-700">{formatCurrency(product.price)}</div>
 									</div>
@@ -96,7 +66,15 @@ const Shop: React.FC = () => {
 									className="p-2 focus:border-gray-400 focus:outline-none
 											focus:shadow-outline rounded border"
 									onClick={() => {
-										addItemToCart(product)
+										addItemToCart({
+											uid: product.id,
+											name: product.name,
+											desc: product.description,
+											price: product.price,
+											image: product.image,
+											available: product.available,
+											quant: 1
+										})
 
 										return router.push(`/shop/cart`)
 									}}
@@ -107,7 +85,17 @@ const Shop: React.FC = () => {
 								<button
 									type="button"
 									className="p-2 focus:border-gray-400 focus:outline-none focus:shadow-outline rounded border"
-									onClick={() => addItemToCart(product)}
+									onClick={() =>
+										addItemToCart({
+											uid: product.id,
+											name: product.name,
+											desc: product.description,
+											price: product.price,
+											image: product.image,
+											available: product.available,
+											quant: 1
+										})
+									}
 								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -132,9 +120,26 @@ const Shop: React.FC = () => {
 
 			<ScrollTop />
 
+			{/* <pre className="whitespace-pre-wrap p-2 bg-green-500 text-white font-sans">
+				{JSON.stringify(_products, null, 4)}
+			</pre> */}
+
 			<Footer />
 		</>
 	)
+}
+
+export const getStaticProps: GetStaticProps = async context => {
+	let { data: _products, error } = await supabase.from<definitions['_products']>('_products').select('*')
+
+	if (error) {
+		return { notFound: true }
+	}
+
+	return {
+		props: { _products },
+		revalidate: 10
+	}
 }
 
 export default Shop

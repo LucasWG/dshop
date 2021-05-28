@@ -66,7 +66,7 @@ const Cart: React.FC = () => {
 
 												<div className="flex gap-3 justify-center md:justify-between flex-wrap">
 													<div className="flex items-center flex-wrap gap-1">
-														<div className="flex items-center gap-1">
+														<div className="flex items-center gap-2">
 															<button
 																type="button"
 																className="p-1 border rounded"
@@ -248,9 +248,10 @@ const Cart: React.FC = () => {
 							<button
 								type="button"
 								className="flex items-center justify-center gap-3 p-3 border rounded-md text-gray-600
-								hover:text-gray-900 hover:border-gray-300 hover:bg-gray-200 transition-colors
-								duration-300 mt-3 bg-gray-100"
+									hover:text-gray-900 hover:border-gray-300 hover:bg-gray-200 transition-colors
+									duration-300 mt-3 bg-gray-100"
 								onClick={() => router.push(`/shop/checkout`)}
+								disabled={items.length === 0}
 							>
 								<FaCreditCard />
 

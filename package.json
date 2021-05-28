@@ -9,6 +9,7 @@
 		"clearCache": "rm -rf .next"
 	},
 	"dependencies": {
+		"@supabase/supabase-js": "^1.11.17",
 		"axios": "^0.21.1",
 		"correios-brasil": "^2.2.2",
 		"currency.js": "^2.0.4",
