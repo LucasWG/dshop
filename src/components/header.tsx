@@ -10,7 +10,7 @@ const Header: React.FC = () => {
 	const router = useRouter()
 	const { cartItems, addItemToCart } = useCart()
 
-	const [menuCartOpen, setMenuCartOpen] = useState(true)
+	const [menuCartOpen, setMenuCartOpen] = useState(false)
 
 	return (
 		<header className="pb-3">
