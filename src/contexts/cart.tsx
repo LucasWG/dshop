@@ -1,10 +1,7 @@
+import currency from 'currency.js'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
-import { definitions } from '../utils/types/supabase'
-
-import currency from 'currency.js'
-
-import { formatCurrencyToValue } from '../utils/formatCurrency'
+type Coupon = { coupon: string; discount: number }
 
 type OrderDetails = {
 	subtotal: number
@@ -35,7 +32,10 @@ const CartContext = createContext<CartContextData>({} as CartContextData)
 export const CartContextProvider: React.FC = ({ children }) => {
 	const [cartItems, setCartItems] = useState<Product[]>([])
 	const [orderDetails, setOrderDetails] = useState<OrderDetails>({} as OrderDetails)
+
 	const [shippingSelected, setShippingSelected] = useState()
+
+	const [coupon, setCoupon] = useState<Coupon>({} as Coupon)
 
 	const addItemToCart = (product: Product) => {
 		let existingItem = cartItems.findIndex(value => value.id === product.id)

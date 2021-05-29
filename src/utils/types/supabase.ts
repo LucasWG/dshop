@@ -12,6 +12,111 @@ export interface paths {
       };
     };
   };
+  "/_coupons": {
+    get: {
+      parameters: {
+        query: {
+          id?: parameters["rowFilter._coupons.id"];
+          coupon?: parameters["rowFilter._coupons.coupon"];
+          discount?: parameters["rowFilter._coupons.discount"];
+          qty?: parameters["rowFilter._coupons.qty"];
+          ends_in?: parameters["rowFilter._coupons.ends_in"];
+          inserted_at?: parameters["rowFilter._coupons.inserted_at"];
+          updated_at?: parameters["rowFilter._coupons.updated_at"];
+          /** Filtering Columns */
+          select?: parameters["select"];
+          /** Ordering */
+          order?: parameters["order"];
+          /** Limiting and Pagination */
+          offset?: parameters["offset"];
+          /** Limiting and Pagination */
+          limit?: parameters["limit"];
+        };
+        header: {
+          /** Limiting and Pagination */
+          Range?: parameters["range"];
+          /** Limiting and Pagination */
+          "Range-Unit"?: parameters["rangeUnit"];
+          /** Preference */
+          Prefer?: parameters["preferCount"];
+        };
+      };
+      responses: {
+        /** OK */
+        200: {
+          schema: definitions["_coupons"][];
+        };
+        /** Partial Content */
+        206: unknown;
+      };
+    };
+    post: {
+      parameters: {
+        body: {
+          /** _coupons */
+          _coupons?: definitions["_coupons"];
+        };
+        query: {
+          /** Filtering Columns */
+          select?: parameters["select"];
+        };
+        header: {
+          /** Preference */
+          Prefer?: parameters["preferReturn"];
+        };
+      };
+      responses: {
+        /** Created */
+        201: unknown;
+      };
+    };
+    delete: {
+      parameters: {
+        query: {
+          id?: parameters["rowFilter._coupons.id"];
+          coupon?: parameters["rowFilter._coupons.coupon"];
+          discount?: parameters["rowFilter._coupons.discount"];
+          qty?: parameters["rowFilter._coupons.qty"];
+          ends_in?: parameters["rowFilter._coupons.ends_in"];
+          inserted_at?: parameters["rowFilter._coupons.inserted_at"];
+          updated_at?: parameters["rowFilter._coupons.updated_at"];
+        };
+        header: {
+          /** Preference */
+          Prefer?: parameters["preferReturn"];
+        };
+      };
+      responses: {
+        /** No Content */
+        204: never;
+      };
+    };
+    patch: {
+      parameters: {
+        query: {
+          id?: parameters["rowFilter._coupons.id"];
+          coupon?: parameters["rowFilter._coupons.coupon"];
+          discount?: parameters["rowFilter._coupons.discount"];
+          qty?: parameters["rowFilter._coupons.qty"];
+          ends_in?: parameters["rowFilter._coupons.ends_in"];
+          inserted_at?: parameters["rowFilter._coupons.inserted_at"];
+          updated_at?: parameters["rowFilter._coupons.updated_at"];
+        };
+        body: {
+          /** _coupons */
+          _coupons?: definitions["_coupons"];
+        };
+        header: {
+          /** Preference */
+          Prefer?: parameters["preferReturn"];
+        };
+      };
+      responses: {
+        /** No Content */
+        204: never;
+      };
+    };
+  };
   "/_products": {
     get: {
       parameters: {
@@ -126,6 +231,20 @@ export interface paths {
 }
 
 export interface definitions {
+  /** Discount coupons */
+  _coupons: {
+    /**
+     * Note:
+     * This is a Primary Key.<pk/>
+     */
+    id: string;
+    coupon: string;
+    discount: number;
+    qty: number;
+    ends_in: string;
+    inserted_at: string;
+    updated_at: string;
+  };
   _products: {
     /**
      * Note:
@@ -164,6 +283,15 @@ export interface parameters {
   offset: string;
   /** Limiting and Pagination */
   limit: string;
+  /** _coupons */
+  "body._coupons": definitions["_coupons"];
+  "rowFilter._coupons.id": string;
+  "rowFilter._coupons.coupon": string;
+  "rowFilter._coupons.discount": string;
+  "rowFilter._coupons.qty": string;
+  "rowFilter._coupons.ends_in": string;
+  "rowFilter._coupons.inserted_at": string;
+  "rowFilter._coupons.updated_at": string;
   /** _products */
   "body._products": definitions["_products"];
   "rowFilter._products.id": string;

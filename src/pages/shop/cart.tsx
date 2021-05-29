@@ -1,6 +1,7 @@
 import { useRouter } from 'next/dist/client/router'
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
 import React, { useState } from 'react'
 import { FaCreditCard, FaGift, FaRegTrashAlt } from 'react-icons/fa'
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
@@ -50,8 +51,12 @@ const Cart: React.FC = () => {
 
 											<div className="flex-1 flex flex-col gap-3">
 												<div className="flex flex-col gap-2">
-													<div className="font-sans text-xl text-gray-700">
-														{product.name}
+													<div className="font-sans text-xl text-gray-600">
+														<Link href={`/shop/${product.slug}`}>
+															<a className="hover:text-gray-900 transition-colors duration-300">
+																{product.name}
+															</a>
+														</Link>
 													</div>
 
 													<div className="font-bold font-sans text-2xl whitespace-nowrap">

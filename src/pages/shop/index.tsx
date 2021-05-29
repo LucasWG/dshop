@@ -21,6 +21,20 @@ const Shop: NextPage<ShopProps> = ({ _products }) => {
 	const router = useRouter()
 	const { addItemToCart } = useCart()
 
+	const handleXxxx = (prod: definitions['_products'], redirect?: boolean) => {
+		addItemToCart({
+			id: prod.id,
+			slug: prod.slug,
+			name: prod.name,
+			images: prod.images,
+			price: prod.price,
+			available: prod.available,
+			amount: 1
+		})
+
+		if (redirect) return router.push(`/shop/cart`)
+	}
+
 	return (
 		<>
 			<Head>
@@ -66,19 +80,7 @@ const Shop: NextPage<ShopProps> = ({ _products }) => {
 										type="button"
 										className="p-2 focus:border-gray-400 focus:outline-none focus:shadow-outline
 										rounded border bg-white"
-										onClick={() => {
-											addItemToCart({
-												id: product.id,
-												slug: product.slug,
-												name: product.name,
-												images: product.images,
-												price: product.price,
-												available: product.available,
-												amount: 1
-											})
-
-											return router.push(`/shop/cart`)
-										}}
+										onClick={() => handleXxxx(product, true)}
 									>
 										<span className="font-sans text-gray-700 uppercase">Comprar agora</span>
 									</button>
@@ -87,17 +89,7 @@ const Shop: NextPage<ShopProps> = ({ _products }) => {
 										type="button"
 										className="p-2 focus:border-gray-400 focus:outline-none focus:shadow-outline
 										rounded border bg-white"
-										onClick={() =>
-											addItemToCart({
-												id: product.id,
-												slug: product.slug,
-												name: product.name,
-												images: product.images,
-												price: product.price,
-												available: product.available,
-												amount: 1
-											})
-										}
+										onClick={() => handleXxxx(product)}
 									>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
@@ -139,10 +131,12 @@ const Shop: NextPage<ShopProps> = ({ _products }) => {
 	)
 }
 
+// TODO: USAR SWR. SE MUDAR O VALOR DOS PRODUTOS E O CLIENT FICAR NAVEGANDO SEM DAR REFRESH NÃO VAI ATUALIZAR O VALOR
 export const getStaticProps: GetStaticProps = async context => {
 	let { data: _products, error } = await supabase
 		.from<definitions['_products']>('_products')
 		.select('id, slug, name, images, price, available')
+		.order('updated_at', { ascending: false })
 
 	return {
 		props: { _products },
