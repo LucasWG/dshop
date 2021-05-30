@@ -9,7 +9,6 @@ import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 import CepCard from '../../components/cepCard'
 import Footer from '../../components/footer'
 import Header from '../../components/header'
-import { ImageWithFallback } from '../../components/imageWithFallback'
 import ScrollTop from '../../components/scrollTop'
 import { useCart } from '../../contexts/cart'
 import { formatCurrency } from '../../utils/formatCurrency'
@@ -41,13 +40,12 @@ const Cart: React.FC = () => {
 									<li key={product.id}>
 										<div className="flex gap-4 flex-wrap justify-center">
 											<div className="relative h-48 w-full sm:w-40 border rounded-md bg-gray-200">
-												<ImageWithFallback
+												<Image
 													src={
 														product.images.length > 0
 															? `/shop/gallery/${product.images[0]}`
 															: `/shop/gallery/9366801_placeholder.jpg`
 													}
-													fallbackSrc={`/shop/gallery/9366801_placeholder.jpg`}
 													className="rounded-md"
 													layout="fill"
 													objectFit="cover"

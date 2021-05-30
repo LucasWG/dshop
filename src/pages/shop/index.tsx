@@ -1,12 +1,12 @@
 import { GetStaticProps, NextPage } from 'next'
 import { useRouter } from 'next/dist/client/router'
 import Head from 'next/head'
+import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
 import Footer from '../../components/footer'
 import Header from '../../components/header'
-import { ImageWithFallback } from '../../components/imageWithFallback'
 import ScrollTop from '../../components/scrollTop'
 import { useCart } from '../../contexts/cart'
 import { supabase } from '../../services/supabase'
@@ -55,13 +55,12 @@ const Shop: NextPage<ShopProps> = ({ _products }) => {
 									<Link href={`/shop/${product.slug}`}>
 										<a>
 											<div className="relative h-48 rounded-t">
-												<ImageWithFallback
+												<Image
 													src={
 														product.images.length > 0
 															? `/shop/gallery/${product.images[0]}`
 															: `/shop/gallery/9366801_placeholder.jpg`
 													}
-													fallbackSrc={`/shop/gallery/9366801_placeholder.jpg`}
 													className="rounded-t group-hover:opacity-90"
 													layout="fill"
 													objectFit="cover"

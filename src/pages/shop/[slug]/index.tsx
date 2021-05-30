@@ -7,7 +7,6 @@ import React, { useState } from 'react'
 import CepCard from '../../../components/cepCard'
 import Footer from '../../../components/footer'
 import Header from '../../../components/header'
-import { ImageWithFallback } from '../../../components/imageWithFallback'
 import ScrollTop from '../../../components/scrollTop'
 import { useCart } from '../../../contexts/cart'
 import { supabase } from '../../../services/supabase'
@@ -63,9 +62,8 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 										rounded-full overflow-hidden"
 										key={key}
 									>
-										<ImageWithFallback
+										<Image
 											src={`/shop/gallery/${image}`}
-											fallbackSrc={`/shop/gallery/9366801_placeholder.jpg`}
 											layout="fill"
 											objectFit="cover"
 											alt={_product.name}
@@ -84,7 +82,18 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 							</ul>
 
 							<div className="relative flex-1 h-96">
-								<ImageWithFallback
+								<Image
+									src={
+										_product.images.length > 0
+											? `/shop/gallery/${_product.images[0]}`
+											: `/shop/gallery/9366801_placeholder.jpg`
+									}
+									layout="fill"
+									objectFit="contain"
+									alt={_product.name}
+								/>
+
+								{/* <ImageWithFallback
 									src={
 										_product.images.length > 0
 											? `/shop/gallery/${_product.images[0]}`
@@ -94,7 +103,7 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 									layout="fill"
 									objectFit="contain"
 									alt={_product.name}
-								/>
+								/> */}
 							</div>
 						</div>
 
