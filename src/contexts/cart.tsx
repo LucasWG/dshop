@@ -1,4 +1,5 @@
 import currency from 'currency.js'
+import PouchDB from 'pouchdb'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
 type Coupon = { coupon: string; discount: number }
@@ -28,6 +29,8 @@ type CartContextData = {
 }
 
 const CartContext = createContext<CartContextData>({} as CartContextData)
+
+const DB = new PouchDB('cart', { auto_compaction: true })
 
 export const CartContextProvider: React.FC = ({ children }) => {
 	const [cartItems, setCartItems] = useState<Product[]>([])
@@ -82,6 +85,24 @@ export const CartContextProvider: React.FC = ({ children }) => {
 			return { ...obj, subtotal, total }
 		})
 	}
+
+	useEffect(() => {
+		let mockTest = [
+			{ id: '9b555f9d-c118-41b6-8a64-d218afa23576', amount: 9999 },
+			{ id: 'de714e58-4b48-44f8-b4dc-dc3668efb1a6', amount: 9999 },
+			{ id: '312515ef-6fd5-4cd8-a3c2-3bb7abdb8cce', amount: 9999 }
+		]
+
+		DB.post({ id: 'de714e58-4b48-44f8-b4dc-dc3668efb1a6', amount: 9999 })
+
+		const funcTest = async () => {
+			let test = await DB.allDocs()
+
+			console.log(test)
+		}
+
+		funcTest()
+	}, [])
 
 	useEffect(orderDetailsCalculate, [cartItems])
 
