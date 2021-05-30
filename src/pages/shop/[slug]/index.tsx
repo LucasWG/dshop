@@ -7,6 +7,7 @@ import React, { useState } from 'react'
 import CepCard from '../../../components/cepCard'
 import Footer from '../../../components/footer'
 import Header from '../../../components/header'
+import { ImageWithFallback } from '../../../components/imageWithFallback'
 import ScrollTop from '../../../components/scrollTop'
 import { useCart } from '../../../contexts/cart'
 import { supabase } from '../../../services/supabase'
@@ -62,32 +63,48 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 										rounded-full overflow-hidden"
 										key={key}
 									>
-										<Image
+										<ImageWithFallback
 											src={`/shop/gallery/${image}`}
-											quality={100}
+											fallbackSrc={`/shop/gallery/9366801_placeholder.jpg`}
 											layout="fill"
-											objectFit="fill"
-											alt="Vela de altar 20x7 branca"
+											objectFit="cover"
+											alt={_product.name}
 										/>
 									</li>
 								))}
+
+								{_product.images.length === 0 && (
+									<Image
+										src={`/shop/gallery/9366801_placeholder.jpg`}
+										layout="fill"
+										objectFit="cover"
+										alt={_product.name}
+									/>
+								)}
 							</ul>
 
 							<div className="relative flex-1 h-96">
-								<Image
-									src={`/shop/gallery/${_product.images[0]}`}
+								<ImageWithFallback
+									src={
+										_product.images.length > 0
+											? `/shop/gallery/${_product.images[0]}`
+											: `/shop/gallery/9366801_placeholder.jpg`
+									}
+									fallbackSrc={`/shop/gallery/9366801_placeholder.jpg`}
 									layout="fill"
 									objectFit="contain"
-									quality={100}
+									alt={_product.name}
 								/>
 							</div>
 						</div>
 
-						<div className="my-4">
-							<h2 className="mb-3">Descrição</h2>
+						{_product.description && (
+							<div className="my-4">
+								<h2 className="mb-3">Descrição</h2>
 
-							<div dangerouslySetInnerHTML={{ __html: _product.description }} />
-						</div>
+								<div dangerouslySetInnerHTML={{ __html: _product.description }} />
+							</div>
+						)}
 					</section>
 
 					<section className="flex flex-col w-full md:w-4/12 gap-3 p-3">

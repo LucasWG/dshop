@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
 
 	return (
 		<footer className="bg-gray-800 pt-5 sm:mt-10">
-			<div className="max-w-6xl m-auto text-gray-800 flex flex-wrap justify-left">
+			{/* <div className="max-w-6xl m-auto text-gray-800 flex flex-wrap justify-left">
 				<div className="p-5 w-1/2 sm:w-4/12 md:w-3/12">
 					<div className="text-xs uppercase text-gray-400 font-medium mb-6">Getting Started</div>
 
@@ -175,44 +175,44 @@ const Footer: React.FC = () => {
 						</a>
 					</Link>
 				</div>
-			</div>
+			</div> */}
 
 			{/* Copyright Bar */}
 			<div className="pt-2">
 				<div
-					className="flex pb-5 px-3 m-auto pt-5 border-t border-gray-500 text-gray-400 text-sm flex-col
+					className="flex pb-5 px-3 m-auto xxpt-5 xxborder-t border-gray-500 text-gray-400 text-sm flex-col
 					md:flex-row max-w-6xl gap-5 items-center"
 				>
 					<div className="mt-2">© Copyright {new Date().getFullYear()}. All Rights Reserved.</div>
 
-					<div className="md:flex-auto md:flex-row-reverse mt-2 flex-row flex order-first md:order-none gap-2">
+					<div className="md:flex-auto md:flex-row-reverse mt-2 flex-row flex order-first md:order-none gap-3">
 						<Link href="/">
-							<a>
-								<FaFacebookF size={18} />
+							<a className="p-1">
+								<FaFacebookF size={18} className="hover:text-gray-50 transition-colors duration-300" />
 							</a>
 						</Link>
 
 						<Link href="/">
-							<a>
-								<FiTwitter size={18} />
+							<a className="p-1">
+								<FiTwitter size={18} className="hover:text-gray-50 transition-colors duration-300" />
 							</a>
 						</Link>
 
 						<Link href="/">
-							<a>
-								<FaYoutube size={18} />
+							<a className="p-1">
+								<FaYoutube size={18} className="hover:text-gray-50 transition-colors duration-300" />
 							</a>
 						</Link>
 
 						<Link href="/">
-							<a>
-								<FaLinkedin size={18} />
+							<a className="p-1">
+								<FaLinkedin size={18} className="hover:text-gray-50 transition-colors duration-300" />
 							</a>
 						</Link>
 
 						<Link href="/">
-							<a>
-								<FaInstagram size={18} />
+							<a className="p-1">
+								<FaInstagram size={18} className="hover:text-gray-50 transition-colors duration-300" />
 							</a>
 						</Link>
 					</div>

@@ -1,12 +1,12 @@
 import { GetStaticProps, NextPage } from 'next'
 import { useRouter } from 'next/dist/client/router'
 import Head from 'next/head'
-import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
 import Footer from '../../components/footer'
 import Header from '../../components/header'
+import { ImageWithFallback } from '../../components/imageWithFallback'
 import ScrollTop from '../../components/scrollTop'
 import { useCart } from '../../contexts/cart'
 import { supabase } from '../../services/supabase'
@@ -47,65 +47,70 @@ const Shop: NextPage<ShopProps> = ({ _products }) => {
 				<section className="flex flex-wrap gap-3 justify-center py-6">
 					{!!_products &&
 						_products.map(product => (
-							<div
-								className="border shadow-md rounded-md w-64 hover:bg-gray-50 group transition duration-300
+							<div key={product.id}>
+								<div
+									className="border shadow-md rounded-md w-64 hover:bg-gray-50 group transition duration-300
 								bg-white"
-								key={product.id}
-							>
-								<Link href={`/shop/${product.slug}`}>
-									<a>
-										<div className="relative h-48 rounded-t">
-											<Image
-												src={`/shop/gallery/${product.images[0]}`}
-												className="rounded-t group-hover:opacity-90"
-												layout="fill"
-												objectFit="cover"
-												quality={100}
-												alt="xxx"
-											/>
-										</div>
-
-										<div className="flex flex-col gap-4 px-3 py-2 items-center">
-											<div className="font-bold font-sans text-gray-700">{product.name}</div>
-
-											<div className="text-pink-700 font-bold text-lg">
-												{formatCurrency(product.price)}
+								>
+									<Link href={`/shop/${product.slug}`}>
+										<a>
+											<div className="relative h-48 rounded-t">
+												<ImageWithFallback
+													src={
+														product.images.length > 0
+															? `/shop/gallery/${product.images[0]}`
+															: `/shop/gallery/9366801_placeholder.jpg`
+													}
+													fallbackSrc={`/shop/gallery/9366801_placeholder.jpg`}
+													className="rounded-t group-hover:opacity-90"
+													layout="fill"
+													objectFit="cover"
+													alt={product.name}
+												/>
 											</div>
-										</div>
-									</a>
-								</Link>
 
-								<div className="flex justify-between p-3">
-									<button
-										type="button"
-										className="p-2 focus:border-gray-400 focus:outline-none focus:shadow-outline
-										rounded border bg-white"
-										onClick={() => handleXxxx(product, true)}
-									>
-										<span className="font-sans text-gray-700 uppercase">Comprar agora</span>
-									</button>
+											<div className="flex flex-col gap-4 px-3 py-2 items-center">
+												<div className="font-bold font-sans text-gray-700">{product.name}</div>
 
-									<button
-										type="button"
-										className="p-2 focus:border-gray-400 focus:outline-none focus:shadow-outline
+												<div className="text-pink-700 font-bold text-lg">
+													{formatCurrency(product.price)}
+												</div>
+											</div>
+										</a>
+									</Link>
+
+									<div className="flex justify-between p-3">
+										<button
+											type="button"
+											className="p-2 focus:border-gray-400 focus:outline-none focus:shadow-outline
 										rounded border bg-white"
-										onClick={() => handleXxxx(product)}
-									>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											className="h-6 w-6 text-gray-700"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
+											onClick={() => handleXxxx(product, true)}
 										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-											/>
-										</svg>
-									</button>
+											<span className="font-sans text-gray-700 uppercase">Comprar agora</span>
+										</button>
+
+										<button
+											type="button"
+											className="p-2 focus:border-gray-400 focus:outline-none focus:shadow-outline
+										rounded border bg-white"
+											onClick={() => handleXxxx(product)}
+										>
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												className="h-6 w-6 text-gray-700"
+												fill="none"
+												viewBox="0 0 24 24"
+												stroke="currentColor"
+											>
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													strokeWidth={2}
+													d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+												/>
+											</svg>
+										</button>
+									</div>
 								</div>
 							</div>
 						))}

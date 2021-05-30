@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 
 import { useCart } from '../contexts/cart'
 import { formatCurrency } from '../utils/formatCurrency'
+import { ImageWithFallback } from './imageWithFallback'
 
 const Header: React.FC = () => {
 	const router = useRouter()
@@ -168,11 +169,15 @@ const Header: React.FC = () => {
 									<li className="border-b" key={product.id}>
 										<div className="flex gap-3 mb-3">
 											<div className="relative flex-shrink-0 w-20 h-20 place-self-center">
-												<Image
-													src={`/shop/gallery/${product.images[0]}`}
+												<ImageWithFallback
+													src={
+														product.images.length > 0
+															? `/shop/gallery/${product.images[0]}`
+															: `/shop/gallery/9366801_placeholder.jpg`
+													}
+													fallbackSrc={`/shop/gallery/9366801_placeholder.jpg`}
 													layout="fill"
-													objectFit="contain"
-													quality={100}
+													objectFit="cover"
 													alt={product.name}
 												/>
 											</div>
