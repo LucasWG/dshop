@@ -5,6 +5,9 @@ import React, { useEffect, useState } from 'react'
 import { getShippingCodeName } from '../utils/correios'
 import { formatCurrency, formatCurrencyToValue } from '../utils/formatCurrency'
 
+import Cookie from 'js-cookie'
+import { addDays } from 'date-fns'
+
 interface ICorreiosPrecoPrazo extends PrecoPrazoEvent {
 	Nome: string
 }
@@ -50,7 +53,7 @@ const CepCard: React.FC = () => {
 				(a, b) => (formatCurrencyToValue(a.Valor) > formatCurrencyToValue(b.Valor) && 1) || -1
 			)
 
-			localStorage.setItem('_DS_CEP', cepResponse.data.cep)
+			saveCookie('__ds-pec', cepResponse.data.cep.replace('-', ''))
 
 			setAddress(cepResponse.data)
 			setShipping(calculateShippingData)
@@ -67,17 +70,30 @@ const CepCard: React.FC = () => {
 	}
 
 	const handleClearCep = () => {
-		localStorage.removeItem('_DS_CEP')
+		deleteCookie('__ds-pec')
 		setAddress(null)
 		setShipping(null)
 	}
 
-	useEffect(() => {
-		let _DS_CEP = localStorage.getItem('_DS_CEP')
+	// COOKIE	-------------------------------------------------------------------------------------------------------
 
-		if (_DS_CEP) {
-			handleCep(_DS_CEP)
-		}
+	const saveCookie = (cookieName: string, value: string, expiresDay: number = 1): void => {
+		Cookie.set(cookieName, value, {
+			expires: addDays(new Date(), expiresDay),
+			secure: process.env.NODE_ENV === 'production'
+		})
+	}
+
+	const getCookie = (cookieName: string): string => Cookie.get(cookieName)
+
+	const deleteCookie = (cookieName: string): void => Cookie.remove(cookieName)
+
+	// COOKIE	-------------------------------------------------------------------------------------------------------
+
+	useEffect(() => {
+		let _cookie = getCookie('__ds-pec')
+
+		if (_cookie) handleCep(_cookie)
 	}, [])
 
 	return (

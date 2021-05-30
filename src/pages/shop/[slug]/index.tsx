@@ -2,7 +2,7 @@ import { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import { useRouter } from 'next/dist/client/router'
 import Head from 'next/head'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import CepCard from '../../../components/cepCard'
 import Footer from '../../../components/footer'
@@ -22,6 +22,7 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 	const { addItemToCart } = useCart()
 
 	const [selectedQuantity, setSelectedQuantity] = useState(1)
+	const [imageSelected, setImageSelected] = useState('')
 
 	const handleXxxx = (redirect?: boolean) => {
 		addItemToCart({
@@ -37,6 +38,8 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 		if (redirect) return router.push(`/shop/cart`)
 	}
 
+	useEffect(() => setImageSelected(_product.images[0]), [_product])
+
 	return (
 		<>
 			<Head>
@@ -47,10 +50,6 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 
 			<Header />
 
-			{/* <pre className="whitespace-pre-wrap text-black bg-white font-sans border m-9 p-9 shadow rounded">
-				{JSON.stringify(_product, null, 4)}
-			</pre> */}
-
 			<main className="container mx-auto px-6">
 				<section className="flex my-9 bg-white rounded-md flex-col md:flex-row">
 					<section className="flex-1 p-3">
@@ -58,8 +57,8 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 							<ul className="w-3/12x flex flex-col gap-1">
 								{[..._product.images].map((image, key) => (
 									<li
-										className="relative w-16 h-16 border-2 hover:border-gray-400 cursor-pointer
-										rounded-full overflow-hidden"
+										className={`relative w-16 h-16 border-2 hover:border-gray-900 cursor-pointer
+										rounded-full overflow-hidden ${imageSelected === image && 'border-gray-700'}`}
 										key={key}
 									>
 										<Image
@@ -67,6 +66,7 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 											layout="fill"
 											objectFit="cover"
 											alt={_product.name}
+											onClick={() => setImageSelected(image)}
 										/>
 									</li>
 								))}
@@ -85,25 +85,13 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 								<Image
 									src={
 										_product.images.length > 0
-											? `/shop/gallery/${_product.images[0]}`
+											? `/shop/gallery/${imageSelected}`
 											: `/shop/gallery/9366801_placeholder.jpg`
 									}
 									layout="fill"
 									objectFit="contain"
 									alt={_product.name}
 								/>
-
-								{/* <ImageWithFallback
-									src={
-										_product.images.length > 0
-											? `/shop/gallery/${_product.images[0]}`
-											: `/shop/gallery/9366801_placeholder.jpg`
-									}
-									fallbackSrc={`/shop/gallery/9366801_placeholder.jpg`}
-									layout="fill"
-									objectFit="contain"
-									alt={_product.name}
-								/> */}
 							</div>
 						</div>
 
