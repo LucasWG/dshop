@@ -69,6 +69,10 @@ export const CartContextProvider: React.FC = ({ children }) => {
 	const removeItemToCart = (id: string) => {
 		let newItemsFiltered = cartItems.filter(value => value.id !== id)
 
+		const xxx = newItemsFiltered.map(item => ({ id: item.id, qtd: item.qtd }))
+
+		localStorage.setItem('__ds-trac', JSON.stringify(xxx))
+
 		setCartItems(newItemsFiltered)
 	}
 
