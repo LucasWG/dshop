@@ -29,7 +29,7 @@ const Shop: NextPage<ShopProps> = ({ _products }) => {
 			images: prod.images,
 			price: prod.price,
 			available: prod.available,
-			amount: 1
+			qtd: 1
 		})
 
 		if (redirect) return router.push(`/shop/cart`)

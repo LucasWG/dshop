@@ -1,5 +1,5 @@
+import axios from 'axios'
 import currency from 'currency.js'
-import PouchDB from 'pouchdb'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
 type Coupon = { coupon: string; discount: number }
@@ -18,7 +18,7 @@ type Product = {
 	available: number
 	slug: string
 	images: string
-	amount: number
+	qtd: number
 }
 
 type CartContextData = {
@@ -29,8 +29,6 @@ type CartContextData = {
 }
 
 const CartContext = createContext<CartContextData>({} as CartContextData)
-
-const DB = new PouchDB('cart', { auto_compaction: true })
 
 export const CartContextProvider: React.FC = ({ children }) => {
 	const [cartItems, setCartItems] = useState<Product[]>([])
@@ -46,7 +44,7 @@ export const CartContextProvider: React.FC = ({ children }) => {
 		let newItems = [...cartItems]
 
 		if (existingItem !== -1) {
-			let newAmount = newItems[existingItem].amount + product.amount
+			let newAmount = newItems[existingItem].qtd + product.qtd
 
 			newAmount = newAmount > product.available ? product.available : newAmount
 
@@ -55,11 +53,15 @@ export const CartContextProvider: React.FC = ({ children }) => {
 
 				newItems = newItemsFiltered
 			} else {
-				newItems[existingItem] = { ...newItems[existingItem], amount: newAmount }
+				newItems[existingItem] = { ...newItems[existingItem], qtd: newAmount }
 			}
 		} else {
 			newItems.push(product)
 		}
+
+		const xxx = newItems.map(item => ({ id: item.id, qtd: item.qtd }))
+
+		localStorage.setItem('__ds-trac', JSON.stringify(xxx))
 
 		setCartItems(newItems)
 	}
@@ -73,7 +75,7 @@ export const CartContextProvider: React.FC = ({ children }) => {
 	const orderDetailsCalculate = () => {
 		const subtotal = cartItems.reduce((previousValue, currentValue) => {
 			let cValue = currency(currentValue.price)
-			let itemPriceTotal = cValue.multiply(currentValue.amount)
+			let itemPriceTotal = cValue.multiply(currentValue.qtd)
 			let sumWithPreviousValue = itemPriceTotal.add(previousValue).value
 
 			return sumWithPreviousValue
@@ -87,21 +89,21 @@ export const CartContextProvider: React.FC = ({ children }) => {
 	}
 
 	useEffect(() => {
-		let mockTest = [
-			{ id: '9b555f9d-c118-41b6-8a64-d218afa23576', amount: 9999 },
-			{ id: 'de714e58-4b48-44f8-b4dc-dc3668efb1a6', amount: 9999 },
-			{ id: '312515ef-6fd5-4cd8-a3c2-3bb7abdb8cce', amount: 9999 }
-		]
+		let storedItems = JSON.parse(localStorage.getItem('__ds-trac'))
 
-		DB.post({ id: 'de714e58-4b48-44f8-b4dc-dc3668efb1a6', amount: 9999 })
+		const getAllItemsFromTheCart = async (items: { id: string; qtd: number }[]) => {
+			const asyncRes = await Promise.all(
+				items.map(async ({ id, qtd }) => {
+					const { data } = await axios.get<Product>(`/api/shop/cart/${id}`)
 
-		const funcTest = async () => {
-			let test = await DB.allDocs()
+					return { ...data, qtd: qtd > data.available ? data.available : qtd }
+				})
+			)
 
-			console.log(test)
+			setCartItems(asyncRes)
 		}
 
-		funcTest()
+		if (storedItems) getAllItemsFromTheCart(storedItems)
 	}, [])
 
 	useEffect(orderDetailsCalculate, [cartItems])

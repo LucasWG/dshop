@@ -82,7 +82,7 @@ const Cart: React.FC = () => {
 																		images: product.images,
 																		price: product.price,
 																		available: product.available,
-																		amount: -1
+																		qtd: -1
 																	})
 																}
 															>
@@ -101,7 +101,7 @@ const Cart: React.FC = () => {
 																</svg>
 															</button>
 
-															<div className="p-1 cursor-default">{product.amount}</div>
+															<div className="p-1 cursor-default">{product.qtd}</div>
 
 															<button
 																type="button"
@@ -114,7 +114,7 @@ const Cart: React.FC = () => {
 																		images: product.images,
 																		price: product.price,
 																		available: product.available,
-																		amount: 1
+																		qtd: 1
 																	})
 																}
 															>

@@ -200,7 +200,7 @@ const Header: React.FC = () => {
 																	images: product.images,
 																	price: product.price,
 																	available: product.available,
-																	amount: -1
+																	qtd: -1
 																})
 															}
 														>
@@ -220,7 +220,7 @@ const Header: React.FC = () => {
 															</svg>
 														</button>
 
-														<div className="">{product.amount}</div>
+														<div className="">{product.qtd}</div>
 
 														<button
 															type="button"
@@ -233,7 +233,7 @@ const Header: React.FC = () => {
 																	images: product.images,
 																	price: product.price,
 																	available: product.available,
-																	amount: 1
+																	qtd: 1
 																})
 															}
 														>
