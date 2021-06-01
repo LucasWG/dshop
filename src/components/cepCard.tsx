@@ -1,13 +1,15 @@
 import axios from 'axios'
 import { CepResponse, PrecoPrazoEvent } from 'correios-brasil/dist'
+import { addDays } from 'date-fns'
+import Cookie from 'js-cookie'
 import React, { useEffect, useState } from 'react'
+import { GrLocation } from 'react-icons/gr'
+import { HiOutlineSearch, HiOutlineTruck } from 'react-icons/hi'
+import { ImSpinner9 } from 'react-icons/im'
 
+import { useCart } from '../contexts/cart'
 import { getShippingCodeName } from '../utils/correios'
 import { formatCurrency, formatCurrencyToValue } from '../utils/formatCurrency'
-
-import Cookie from 'js-cookie'
-import { addDays } from 'date-fns'
-import { useCart } from '../contexts/cart'
 
 interface ICorreiosPrecoPrazo extends PrecoPrazoEvent {
 	Nome: string
@@ -110,26 +112,7 @@ const CepCard: React.FC = () => {
 			{shipping ? (
 				<div className="flex flex-col gap-2">
 					<div>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							className="h-6 w-6 inline-block mr-2"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-							/>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-							/>
-						</svg>
+						<GrLocation className="inline-block mr-2" size={24} />
 
 						<span className="align-middle">{address.cep}</span>
 					</div>
@@ -142,29 +125,20 @@ const CepCard: React.FC = () => {
 
 					{shipping.map((_shipping, key) => (
 						<div
-							className={`flex gap-2 p-2 rounded-lg ${
+							className={`flex gap-2 p-2 rounded border shadow ${
 								selectedShipping?.Codigo === _shipping.Codigo
-									? 'bg-gray-300 cursor-default'
-									: 'bg-gray-50 hover:bg-gray-100 cursor-pointer'
-							}`}
+									? 'bg-green-700 text-white'
+									: 'bg-gray-50 hover:bg-gray-100'
+							} transition-colors duration-300 cursor-pointer`}
 							onClick={() => selectShipping(_shipping)}
 							key={key}
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className="h-full w-10 inline-block mr-2 text-gray-700"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
-								<path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth="2"
-									d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"
-								/>
-							</svg>
+							<HiOutlineTruck
+								className={`inline-block h-full mr-2 ${
+									selectedShipping?.Codigo === _shipping.Codigo && 'text-white'
+								}`}
+								size={40}
+							/>
 
 							<div className="flex flex-col gap-1">
 								<span className="align-middle font-bold">{_shipping.Nome}</span>
@@ -211,26 +185,7 @@ const CepCard: React.FC = () => {
 							className="absolute inset-y-0 right-0 px-4 focus:outline-none border-l"
 							disabled={cepInputLoading}
 						>
-							<svg
-								className="animate-spin -ml-1x mr-3x h-6 w-6 text-gray-700"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-							>
-								<circle
-									className="opacity-25"
-									cx="12"
-									cy="12"
-									r="10"
-									stroke="currentColor"
-									strokeWidth="4"
-								></circle>
-								<path
-									className="opacity-75"
-									fill="currentColor"
-									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-								></path>
-							</svg>
+							<ImSpinner9 className="animate-spin -ml-1x mr-3x text-gray-700" size={24} />
 						</button>
 					) : (
 						<button
@@ -238,20 +193,7 @@ const CepCard: React.FC = () => {
 							className="absolute inset-y-0 right-0 px-4 focus:outline-none border-l"
 							disabled={cepInputLoading}
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className="h-6 w-6 text-gray-700"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth="2"
-									d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-								/>
-							</svg>
+							<HiOutlineSearch className="text-gray-700" size={24} />
 						</button>
 					)}
 				</form>

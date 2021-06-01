@@ -7,15 +7,6 @@ module.exports = {
 	// 	defaultLocale: 'pt-BR'
 	// },
 	images: {
-		domains: ['images.unsplash.com']
-	},
-	async redirects() {
-		return [
-			{
-				source: '/',
-				destination: '/shop',
-				permanent: true
-			}
-		]
+		domains: ['']
 	}
 }

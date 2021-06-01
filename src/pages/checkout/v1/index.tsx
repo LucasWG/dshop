@@ -1,9 +1,9 @@
 import Head from 'next/head'
 import React from 'react'
 
-import Footer from '../../components/footer'
-import Header from '../../components/header'
-import { useCart } from '../../contexts/cart'
+import Footer from '../../../components/footer'
+import Header from '../../../components/header'
+import { useCart } from '../../../contexts/cart'
 
 const Checkout: React.FC = () => {
 	const {} = useCart()

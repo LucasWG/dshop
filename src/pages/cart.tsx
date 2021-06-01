@@ -3,15 +3,19 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
+import { AiOutlineEye } from 'react-icons/ai'
 import { FaCreditCard, FaRegTrashAlt } from 'react-icons/fa'
+import { HiMinus, HiOutlineSearch, HiOutlineTrash, HiPlus } from 'react-icons/hi'
+import { ImSpinner9 } from 'react-icons/im'
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
+import { IoAlertCircleOutline } from 'react-icons/io5'
 
-import CepCard from '../../components/cepCard'
-import Footer from '../../components/footer'
-import Header from '../../components/header'
-import ScrollTop from '../../components/scrollTop'
-import { useCart } from '../../contexts/cart'
-import { formatCurrency } from '../../utils/formatCurrency'
+import CepCard from '../components/cepCard'
+import Footer from '../components/footer'
+import Header from '../components/header'
+import ScrollTop from '../components/scrollTop'
+import { useCart } from '../contexts/cart'
+import { formatCurrency } from '../utils/formatCurrency'
 
 const Cart: React.FC = () => {
 	const router = useRouter()
@@ -67,8 +71,8 @@ const Cart: React.FC = () => {
 												<Image
 													src={
 														product.images.length > 0
-															? `/shop/gallery/${product.images[0]}`
-															: `/shop/gallery/9366801_placeholder.jpg`
+															? `/gallery/${product.images[0]}`
+															: `/gallery/9366801_placeholder.jpg`
 													}
 													className="rounded-md"
 													layout="fill"
@@ -80,7 +84,7 @@ const Cart: React.FC = () => {
 											<div className="flex-1 flex flex-col justify-between gap-3">
 												<div className="flex flex-col gap-2">
 													<div className="font-sans text-xl text-gray-600">
-														<Link href={`/shop/${product.slug}`}>
+														<Link href={`/produtos/${product.slug}`}>
 															<a className="hover:text-gray-900 transition-colors duration-300">
 																{product.name}
 															</a>
@@ -110,19 +114,7 @@ const Cart: React.FC = () => {
 																	})
 																}
 															>
-																<svg
-																	className="h-6 w-6"
-																	fill="none"
-																	viewBox="0 0 24 24"
-																	stroke="currentColor"
-																>
-																	<path
-																		strokeLinecap="round"
-																		strokeLinejoin="round"
-																		strokeWidth={2}
-																		d="M18 12H6"
-																	/>
-																</svg>
+																<HiMinus size={24} />
 															</button>
 
 															<div className="p-1 cursor-default">{product.qtd}</div>
@@ -142,19 +134,7 @@ const Cart: React.FC = () => {
 																	})
 																}
 															>
-																<svg
-																	className="h-6 w-6"
-																	fill="none"
-																	viewBox="0 0 24 24"
-																	stroke="currentColor"
-																>
-																	<path
-																		strokeLinecap="round"
-																		strokeLinejoin="round"
-																		strokeWidth={2}
-																		d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-																	/>
-																</svg>
+																<HiPlus size={24} />
 															</button>
 														</div>
 
@@ -171,54 +151,24 @@ const Cart: React.FC = () => {
 													>
 														<button
 															type="button"
-															className="flex items-center gap-1 p-1 uppercase text-gray-600
+															className="flex items-center gap-1 p-2 uppercase text-gray-600
 															text-xs font-extralight transition-colors duration-300
 															hover:text-red-600 border rounded-md whitespace-nowrap order-last"
 															onClick={() => removeItemToCart(product.id)}
 														>
-															<svg
-																className="h-5 w-5 mb-1"
-																fill="none"
-																viewBox="0 0 24 24"
-																stroke="currentColor"
-															>
-																<path
-																	strokeLinecap="round"
-																	strokeLinejoin="round"
-																	strokeWidth={2}
-																	d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-																/>
-															</svg>
+															<HiOutlineTrash size={24} />
 
 															<span>remover item</span>
 														</button>
 
 														<button
 															type="button"
-															className="flex items-center gap-1 p-1 uppercase text-gray-600
+															className="flex items-center gap-1 p-2 uppercase text-gray-600
 															text-xs font-extralight transition-colors duration-300
 															hover:text-green-600 border rounded-md whitespace-nowrap"
-															onClick={() => router.push(`/shop/${product.slug}`)}
+															onClick={() => router.push(`/produtos/${product.slug}`)}
 														>
-															<svg
-																className="h-6 w-6"
-																fill="none"
-																viewBox="0 0 24 24"
-																stroke="currentColor"
-															>
-																<path
-																	strokeLinecap="round"
-																	strokeLinejoin="round"
-																	strokeWidth={2}
-																	d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-																/>
-																<path
-																	strokeLinecap="round"
-																	strokeLinejoin="round"
-																	strokeWidth={2}
-																	d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-																/>
-															</svg>
+															<AiOutlineEye size={24} />
 
 															<span>ver na loja</span>
 														</button>
@@ -231,8 +181,13 @@ const Cart: React.FC = () => {
 
 								{cartItems.length === 0 && (
 									<li>
-										<div className="text-center my-10 text-2xl text-gray-600 font-mono">
-											Empty cart
+										<div
+											className="flex items-center justify-center gap-2 border rounded-md
+											border-gray-300 py-2 mt-6 text-gray-600"
+										>
+											<IoAlertCircleOutline size={26} />
+
+											<span>O carrinho de compras está vazio.</span>
 										</div>
 									</li>
 								)}
@@ -297,7 +252,7 @@ const Cart: React.FC = () => {
 								className="flex items-center justify-center gap-3 p-3 border rounded-md text-gray-600
 									hover:text-gray-900 hover:border-gray-300 hover:bg-gray-200 transition-colors
 									duration-300 mt-3 bg-gray-100"
-								onClick={() => router.push(`/shop/checkout`)}
+								onClick={() => router.push(`/checkout/v1`)}
 								disabled={cartItems.length === 0}
 							>
 								<FaCreditCard />
@@ -338,26 +293,10 @@ const Cart: React.FC = () => {
 												className="absolute inset-y-0 right-0 px-4 focus:outline-none border-l"
 												disabled={cupomLoading || !!coupon}
 											>
-												<svg
-													className="animate-spin -ml-1x mr-3x h-6 w-6 text-gray-700"
-													xmlns="http://www.w3.org/2000/svg"
-													fill="none"
-													viewBox="0 0 24 24"
-												>
-													<circle
-														className="opacity-25"
-														cx="12"
-														cy="12"
-														r="10"
-														stroke="currentColor"
-														strokeWidth="4"
-													></circle>
-													<path
-														className="opacity-75"
-														fill="currentColor"
-														d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-													></path>
-												</svg>
+												<ImSpinner9
+													className="animate-spin -ml-1x mr-3x text-gray-700"
+													size={24}
+												/>
 											</button>
 										) : (
 											<button
@@ -365,20 +304,7 @@ const Cart: React.FC = () => {
 												className="absolute inset-y-0 right-0 px-4 focus:outline-none border-l"
 												disabled={cupomLoading || !!coupon}
 											>
-												<svg
-													xmlns="http://www.w3.org/2000/svg"
-													className="h-6 w-6 text-gray-700"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-												>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth="2"
-														d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-													/>
-												</svg>
+												<HiOutlineSearch className="text-gray-700" size={24} />
 											</button>
 										)}
 									</div>

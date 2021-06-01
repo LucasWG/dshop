@@ -4,14 +4,14 @@ import Head from 'next/head'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 
-import CepCard from '../../../components/cepCard'
-import Footer from '../../../components/footer'
-import Header from '../../../components/header'
-import ScrollTop from '../../../components/scrollTop'
-import { useCart } from '../../../contexts/cart'
-import { supabase } from '../../../services/supabase'
-import { formatCurrency } from '../../../utils/formatCurrency'
-import { definitions } from '../../../utils/types/supabase'
+import CepCard from '../../components/cepCard'
+import Footer from '../../components/footer'
+import Header from '../../components/header'
+import ScrollTop from '../../components/scrollTop'
+import { useCart } from '../../contexts/cart'
+import { supabase } from '../../services/supabase'
+import { formatCurrency } from '../../utils/formatCurrency'
+import { definitions } from '../../utils/types/supabase'
 
 type ProductPageProps = {
 	_product: definitions['_products']
@@ -24,7 +24,7 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 	const [selectedQuantity, setSelectedQuantity] = useState(1)
 	const [imageSelected, setImageSelected] = useState('')
 
-	const handleXxxx = (redirect?: boolean) => {
+	const handleAddItemToCart = (redirect?: boolean) => {
 		addItemToCart({
 			id: _product.id,
 			slug: _product.slug,
@@ -35,7 +35,7 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 			qtd: selectedQuantity
 		})
 
-		if (redirect) return router.push(`/shop/cart`)
+		if (redirect) return router.push(`/cart`)
 	}
 
 	useEffect(() => setImageSelected(_product.images[0]), [_product])
@@ -62,7 +62,7 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 										key={key}
 									>
 										<Image
-											src={`/shop/gallery/${image}`}
+											src={`/gallery/${image}`}
 											layout="fill"
 											objectFit="cover"
 											alt={_product.name}
@@ -73,7 +73,7 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 
 								{_product.images.length === 0 && (
 									<Image
-										src={`/shop/gallery/9366801_placeholder.jpg`}
+										src={`/gallery/9366801_placeholder.jpg`}
 										layout="fill"
 										objectFit="cover"
 										alt={_product.name}
@@ -85,8 +85,8 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 								<Image
 									src={
 										_product.images.length > 0
-											? `/shop/gallery/${imageSelected}`
-											: `/shop/gallery/9366801_placeholder.jpg`
+											? `/gallery/${imageSelected}`
+											: `/gallery/9366801_placeholder.jpg`
 									}
 									layout="fill"
 									objectFit="contain"
@@ -157,7 +157,7 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 									className="flex items-center justify-center gap-3 p-3 border rounded-md text-gray-600
 									hover:text-gray-900 hover:border-gray-300 hover:bg-gray-200 transition-colors
 									duration-300 mt-3 bg-gray-200"
-									onClick={() => handleXxxx(true)}
+									onClick={() => handleAddItemToCart(true)}
 								>
 									Comprar agora
 								</button>
@@ -167,7 +167,7 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 									className="flex items-center justify-center gap-3 p-3 border rounded-md text-gray-600
 									hover:text-gray-900 hover:border-gray-300 hover:bg-gray-200 transition-colors
 									duration-300 mt-3 bg-gray-100"
-									onClick={() => handleXxxx()}
+									onClick={() => handleAddItemToCart()}
 								>
 									Adicionar ao Carrinho
 								</button>
