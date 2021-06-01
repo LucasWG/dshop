@@ -7,12 +7,15 @@ import { formatCurrency, formatCurrencyToValue } from '../utils/formatCurrency'
 
 import Cookie from 'js-cookie'
 import { addDays } from 'date-fns'
+import { useCart } from '../contexts/cart'
 
 interface ICorreiosPrecoPrazo extends PrecoPrazoEvent {
 	Nome: string
 }
 
 const CepCard: React.FC = () => {
+	const { selectedShipping, selectShipping, removeShipping } = useCart()
+
 	const [address, setAddress] = useState<CepResponse>(null)
 	const [shipping, setShipping] = useState<ICorreiosPrecoPrazo[]>(null)
 
@@ -57,6 +60,7 @@ const CepCard: React.FC = () => {
 
 			setAddress(cepResponse.data)
 			setShipping(calculateShippingData)
+			if (!selectedShipping) selectShipping(calculateShippingData[0])
 		} catch (err) {
 			setCepInputError(true)
 		}
@@ -73,6 +77,7 @@ const CepCard: React.FC = () => {
 		deleteCookie('__ds-pec')
 		setAddress(null)
 		setShipping(null)
+		removeShipping()
 	}
 
 	// COOKIE	-------------------------------------------------------------------------------------------------------
@@ -136,10 +141,18 @@ const CepCard: React.FC = () => {
 					</div>
 
 					{shipping.map((_shipping, key) => (
-						<div className="flex gap-2 cursor-default bg-gray-50 p-2" key={key}>
+						<div
+							className={`flex gap-2 p-2 rounded-lg ${
+								selectedShipping?.Codigo === _shipping.Codigo
+									? 'bg-gray-300 cursor-default'
+									: 'bg-gray-50 hover:bg-gray-100 cursor-pointer'
+							}`}
+							onClick={() => selectShipping(_shipping)}
+							key={key}
+						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
-								className="h-full w-10 inline-block mr-2"
+								className="h-full w-10 inline-block mr-2 text-gray-700"
 								fill="none"
 								viewBox="0 0 24 24"
 								stroke="currentColor"
@@ -187,7 +200,7 @@ const CepCard: React.FC = () => {
 						id="calculateShipping"
 						name="calculateShipping"
 						className={`w-full py-3 pl-3 pr-16 border rounded-md bg-gray-50 focus:outline-none
-										focus:border-gray-400 text-gray-700 ${cepInputError && 'border-red-600'}`}
+						focus:border-gray-400 text-gray-700 ${cepInputError && 'border-red-600'} disabled:opacity-60`}
 						placeholder="00000-000"
 						disabled={cepInputLoading}
 					/>

@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
-import { FaCreditCard, FaGift, FaRegTrashAlt } from 'react-icons/fa'
+import { FaCreditCard, FaRegTrashAlt } from 'react-icons/fa'
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 
 import CepCard from '../../components/cepCard'
@@ -15,9 +15,33 @@ import { formatCurrency } from '../../utils/formatCurrency'
 
 const Cart: React.FC = () => {
 	const router = useRouter()
-	const { cartItems, orderDetails, addItemToCart, removeItemToCart } = useCart()
+	const {
+		cartItems,
+		orderDetails,
+		coupon,
+		selectedShipping,
+		addItemToCart,
+		addCoupon,
+		removeCoupon,
+		removeItemToCart
+	} = useCart()
 
 	const [cupomCardState, setCupomCardState] = useState(false)
+	const [cupomLoading, setCupomLoading] = useState(false)
+	const [cupomError, setCupomError] = useState(false)
+
+	const handleFormCupomSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault()
+
+		setCupomError(false)
+		setCupomLoading(true)
+
+		let couponAdded = await addCoupon(event.target[0].value)
+
+		if (!couponAdded) setCupomError(true)
+
+		setCupomLoading(false)
+	}
 
 	return (
 		<>
@@ -233,24 +257,35 @@ const Cart: React.FC = () => {
 										<div className="">{formatCurrency(orderDetails.subtotal)}</div>
 									</div>
 
-									<div className="flex justify-between items-center p-4 border-b">
-										<div className="flex gap-1 items-center">
-											<button type="button" className="p-2 group" onClick={() => {}}>
-												<FaRegTrashAlt className="text-gray-600 group-hover:text-red-500 transition-colors duration-300" />
-											</button>
+									{coupon && (
+										<div className="flex justify-between items-center p-4 border-b">
+											<div className="flex gap-1 items-center">
+												<button type="button" className="p-2 group" onClick={removeCoupon}>
+													<FaRegTrashAlt className="text-gray-600 group-hover:text-red-500 transition-colors duration-300" />
+												</button>
 
-											<div className="">Cupom "10off"</div>
+												<div className="">Cupom "{coupon.coupon}"</div>
+											</div>
+
+											<div className="whitespace-nowrap text-green-700">
+												- {formatCurrency(orderDetails.coupon)}
+											</div>
 										</div>
+									)}
 
-										<div className="text-green-700">R$ 10</div>
-									</div>
+									{selectedShipping && (
+										<div className="flex justify-between p-4 border-b">
+											<div className="">Frete</div>
+											<div className="">{formatCurrency(selectedShipping.Valor)}</div>
+										</div>
+									)}
 
 									<div className="flex justify-between p-4 border-b">
 										<div className="">Imposto</div>
-										<div className="">0</div>
+										<div className="">{formatCurrency(0)}</div>
 									</div>
 
-									<div className="flex justify-between p-4 border-b">
+									<div className="flex justify-between p-4">
 										<div className="">Total</div>
 										<div className="">{formatCurrency(orderDetails.total)}</div>
 									</div>
@@ -271,7 +306,7 @@ const Cart: React.FC = () => {
 							</button>
 						</div>
 
-						<CepCard />
+						{cartItems.length > 0 && <CepCard />}
 
 						<div className="flex flex-col gap-3 bg-white rounded-md border">
 							<div className="flex justify-between items-center p-6">
@@ -287,25 +322,69 @@ const Cart: React.FC = () => {
 									Se você tiver um código de cupom, insira-o na caixa abaixo
 								</span>
 
-								<div className="flex">
-									<input
-										type="text"
-										className="border px-4 py-3 rounded-l-full focus:outline-none focus:border-gray-500
-									transition-colors duration-300 bg-gray-100 w-full"
-										placeholder="10off"
-									/>
+								<form onSubmit={handleFormCupomSubmit} autoComplete="off">
+									<div className="flex relative">
+										<input
+											type="text"
+											className={`w-full py-3 pl-3 pr-16 border rounded-md bg-gray-50 focus:outline-none
+											focus:border-gray-400 text-gray-700 ${cupomError && 'border-red-600'} disabled:opacity-60`}
+											placeholder={!!coupon ? coupon.coupon : '10off'}
+											disabled={cupomLoading || !!coupon}
+										/>
 
-									<button
-										type="button"
-										className="flex items-center bg-gray-800 text-white px-2 gap-1 w-28 rounded-r-full
-									focus:outline-none hover:bg-green-600 transition-colors duration-500 font-serif"
-										onClick={() => {}}
-									>
-										<FaGift size={30} />
+										{cupomLoading ? (
+											<button
+												type="button"
+												className="absolute inset-y-0 right-0 px-4 focus:outline-none border-l"
+												disabled={cupomLoading || !!coupon}
+											>
+												<svg
+													className="animate-spin -ml-1x mr-3x h-6 w-6 text-gray-700"
+													xmlns="http://www.w3.org/2000/svg"
+													fill="none"
+													viewBox="0 0 24 24"
+												>
+													<circle
+														className="opacity-25"
+														cx="12"
+														cy="12"
+														r="10"
+														stroke="currentColor"
+														strokeWidth="4"
+													></circle>
+													<path
+														className="opacity-75"
+														fill="currentColor"
+														d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+													></path>
+												</svg>
+											</button>
+										) : (
+											<button
+												type="submit"
+												className="absolute inset-y-0 right-0 px-4 focus:outline-none border-l"
+												disabled={cupomLoading || !!coupon}
+											>
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													className="h-6 w-6 text-gray-700"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+												>
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														strokeWidth="2"
+														d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+													/>
+												</svg>
+											</button>
+										)}
+									</div>
 
-										<span>Aplicar cupom</span>
-									</button>
-								</div>
+									{coupon && <span className="text-green-800 text-sm">Cupom adicionado</span>}
+								</form>
 							</div>
 						</div>
 					</section>

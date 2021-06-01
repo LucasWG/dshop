@@ -1,12 +1,18 @@
 import axios from 'axios'
+import { PrecoPrazoEvent } from 'correios-brasil/dist'
 import currency from 'currency.js'
 import React, { createContext, useContext, useEffect, useState } from 'react'
+import { formatCurrencyToValue } from '../utils/formatCurrency'
 
-type Coupon = { coupon: string; discount: number }
+import { definitions } from '../utils/types/supabase'
+
+interface ICorreiosPrecoPrazo extends PrecoPrazoEvent {
+	Nome: string
+}
 
 type OrderDetails = {
 	subtotal: number
-	Coupon: number
+	coupon: number
 	tax: number
 	total: number
 }
@@ -23,8 +29,14 @@ type Product = {
 
 type CartContextData = {
 	cartItems: Product[]
+	coupon: definitions['_coupons']
 	orderDetails: OrderDetails
+	selectedShipping: ICorreiosPrecoPrazo | null
+	selectShipping(_shipping: ICorreiosPrecoPrazo): void
+	removeShipping(): void
 	addItemToCart(product: Product): void
+	addCoupon(cpn: string): Promise<boolean>
+	removeCoupon(): void
 	removeItemToCart(id: string): void
 }
 
@@ -34,9 +46,13 @@ export const CartContextProvider: React.FC = ({ children }) => {
 	const [cartItems, setCartItems] = useState<Product[]>([])
 	const [orderDetails, setOrderDetails] = useState<OrderDetails>({} as OrderDetails)
 
-	const [shippingSelected, setShippingSelected] = useState()
+	const [coupon, setCoupon] = useState<definitions['_coupons'] | null>(null)
 
-	const [coupon, setCoupon] = useState<Coupon>({} as Coupon)
+	const [selectedShipping, setSelectedShipping] = useState<ICorreiosPrecoPrazo | null>(null)
+
+	const selectShipping = (_shipping: ICorreiosPrecoPrazo) => setSelectedShipping(_shipping)
+
+	const removeShipping = () => setSelectedShipping(null)
 
 	const addItemToCart = (product: Product) => {
 		let existingItem = cartItems.findIndex(value => value.id === product.id)
@@ -85,12 +101,26 @@ export const CartContextProvider: React.FC = ({ children }) => {
 			return sumWithPreviousValue
 		}, 0)
 
-		const total = subtotal
+		const cpn = coupon ? (coupon.discount * subtotal) / 100 : 0
+
+		const total = subtotal - cpn + (selectedShipping ? formatCurrencyToValue(selectedShipping?.Valor) : 0)
 
 		setOrderDetails(obj => {
-			return { ...obj, subtotal, total }
+			return { ...obj, subtotal, coupon: cpn, total }
 		})
 	}
+
+	const addCoupon = async (cpn: string): Promise<boolean> => {
+		const { data: _coupon } = await axios.get(`/api/shop/cart/coupon`, { params: { cpn } })
+
+		if (_coupon?.error) return false
+
+		setCoupon(_coupon)
+
+		return true
+	}
+
+	const removeCoupon = () => setCoupon(null)
 
 	useEffect(() => {
 		let storedItems = JSON.parse(localStorage.getItem('__ds-trac'))
@@ -110,10 +140,27 @@ export const CartContextProvider: React.FC = ({ children }) => {
 		if (storedItems) getAllItemsFromTheCart(storedItems)
 	}, [])
 
-	useEffect(orderDetailsCalculate, [cartItems])
+	useEffect(orderDetailsCalculate, [cartItems, coupon, selectedShipping])
+
+	useEffect(() => {
+		if (cartItems.length <= 0) removeShipping()
+	}, [cartItems])
 
 	return (
-		<CartContext.Provider value={{ cartItems, orderDetails, addItemToCart, removeItemToCart }}>
+		<CartContext.Provider
+			value={{
+				cartItems,
+				coupon,
+				orderDetails,
+				selectedShipping,
+				selectShipping,
+				removeShipping,
+				addCoupon,
+				removeCoupon,
+				addItemToCart,
+				removeItemToCart
+			}}
+		>
 			{children}
 		</CartContext.Provider>
 	)
