@@ -31,7 +31,7 @@ const Shop: NextPage<ShopProps> = ({ _products }) => {
 			images: prod.images,
 			price: prod.price,
 			available: prod.available,
-			qtd: 1
+			qty: 1
 		})
 
 		if (redirect) return router.push(`cart`)
@@ -40,7 +40,7 @@ const Shop: NextPage<ShopProps> = ({ _products }) => {
 	return (
 		<>
 			<Head>
-				<title>Shop | {process.env.NEXT_PUBLIC_NAME}</title>
+				<title>{process.env.NEXT_PUBLIC_NAME}</title>
 			</Head>
 
 			<Header />

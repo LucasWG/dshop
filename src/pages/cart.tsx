@@ -110,14 +110,14 @@ const Cart: React.FC = () => {
 																		images: product.images,
 																		price: product.price,
 																		available: product.available,
-																		qtd: -1
+																		qty: -1
 																	})
 																}
 															>
 																<HiMinus size={24} />
 															</button>
 
-															<div className="p-1 cursor-default">{product.qtd}</div>
+															<div className="p-1 cursor-default">{product.qty}</div>
 
 															<button
 																type="button"
@@ -130,7 +130,7 @@ const Cart: React.FC = () => {
 																		images: product.images,
 																		price: product.price,
 																		available: product.available,
-																		qtd: 1
+																		qty: 1
 																	})
 																}
 															>

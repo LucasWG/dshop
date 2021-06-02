@@ -26,7 +26,7 @@ const Header: React.FC = () => {
 						</Link>
 					</h1>
 
-					{router.route !== '/cart' && (
+					{router.route !== '/cart' && router.route.split('/')[1] !== 'checkout' && (
 						<div className="absolute inset-y-0x right-0">
 							<button
 								type="button"
@@ -115,7 +115,7 @@ const Header: React.FC = () => {
 				)}
 			</div>
 
-			{router.route !== '/cart' && (
+			{router.route !== '/cart' && router.route.split('/')[1] !== 'checkout' && (
 				<div
 					className={`fixed inset-y-0 right-0 transition delay-150 duration-300 transform ${
 						menuCartOpen ? 'translate-x-0 ease-out' : 'translate-x-full ease-in'
@@ -182,14 +182,14 @@ const Header: React.FC = () => {
 																	images: product.images,
 																	price: product.price,
 																	available: product.available,
-																	qtd: -1
+																	qty: -1
 																})
 															}
 														>
 															<HiOutlineMinusCircle className="text-gray-500" size={24} />
 														</button>
 
-														<div className="">{product.qtd}</div>
+														<div className="">{product.qty}</div>
 
 														<button
 															type="button"
@@ -202,7 +202,7 @@ const Header: React.FC = () => {
 																	images: product.images,
 																	price: product.price,
 																	available: product.available,
-																	qtd: 1
+																	qty: 1
 																})
 															}
 														>

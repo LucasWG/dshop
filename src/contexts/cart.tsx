@@ -24,7 +24,7 @@ type Product = {
 	available: number
 	slug: string
 	images: string
-	qtd: number
+	qty: number
 }
 
 type CartContextData = {
@@ -60,7 +60,7 @@ export const CartContextProvider: React.FC = ({ children }) => {
 		let newItems = [...cartItems]
 
 		if (existingItem !== -1) {
-			let newAmount = newItems[existingItem].qtd + product.qtd
+			let newAmount = newItems[existingItem].qty + product.qty
 
 			newAmount = newAmount > product.available ? product.available : newAmount
 
@@ -69,13 +69,13 @@ export const CartContextProvider: React.FC = ({ children }) => {
 
 				newItems = newItemsFiltered
 			} else {
-				newItems[existingItem] = { ...newItems[existingItem], qtd: newAmount }
+				newItems[existingItem] = { ...newItems[existingItem], qty: newAmount }
 			}
 		} else {
 			newItems.push(product)
 		}
 
-		const xxx = newItems.map(item => ({ id: item.id, qtd: item.qtd }))
+		const xxx = newItems.map(item => ({ id: item.id, qty: item.qty }))
 
 		localStorage.setItem('__ds-trac', JSON.stringify(xxx))
 
@@ -85,7 +85,7 @@ export const CartContextProvider: React.FC = ({ children }) => {
 	const removeItemToCart = (id: string) => {
 		let newItemsFiltered = cartItems.filter(value => value.id !== id)
 
-		const xxx = newItemsFiltered.map(item => ({ id: item.id, qtd: item.qtd }))
+		const xxx = newItemsFiltered.map(item => ({ id: item.id, qty: item.qty }))
 
 		localStorage.setItem('__ds-trac', JSON.stringify(xxx))
 
@@ -95,7 +95,7 @@ export const CartContextProvider: React.FC = ({ children }) => {
 	const orderDetailsCalculate = () => {
 		const subtotal = cartItems.reduce((previousValue, currentValue) => {
 			let cValue = currency(currentValue.price)
-			let itemPriceTotal = cValue.multiply(currentValue.qtd)
+			let itemPriceTotal = cValue.multiply(currentValue.qty)
 			let sumWithPreviousValue = itemPriceTotal.add(previousValue).value
 
 			return sumWithPreviousValue
@@ -125,12 +125,12 @@ export const CartContextProvider: React.FC = ({ children }) => {
 	useEffect(() => {
 		let storedItems = JSON.parse(localStorage.getItem('__ds-trac'))
 
-		const getAllItemsFromTheCart = async (items: { id: string; qtd: number }[]) => {
+		const getAllItemsFromTheCart = async (items: { id: string; qty: number }[]) => {
 			const asyncRes = await Promise.all(
-				items.map(async ({ id, qtd }) => {
+				items.map(async ({ id, qty }) => {
 					const { data } = await axios.get<Product>(`/api/shop/cart/${id}`)
 
-					return { ...data, qtd: qtd > data.available ? data.available : qtd }
+					return { ...data, qty: qty > data.available ? data.available : qty }
 				})
 			)
 

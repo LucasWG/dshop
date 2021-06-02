@@ -1,7 +1,7 @@
 import currency from 'currency.js'
 
 const currencyOptions = {
-	symbol: 'R$ ',
+	symbol: 'R$',
 	separator: '.',
 	decimal: ',',
 	precision: 2

@@ -32,7 +32,7 @@ const ProductPage: NextPage<ProductPageProps> = ({ _product }) => {
 			images: _product.images,
 			price: _product.price,
 			available: _product.available,
-			qtd: selectedQuantity
+			qty: selectedQuantity
 		})
 
 		if (redirect) return router.push(`/cart`)
