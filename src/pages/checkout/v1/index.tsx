@@ -33,9 +33,9 @@ const Checkout: React.FC = () => {
 	const deleteCookie = (cookieName: string): void => Cookies.remove(cookieName)
 	// *****************************************************************************************************************
 
-	const onCepSubmit = data => {
-		console.log(data)
-	}
+	const onEmailSubmit = data => console.log(data)
+
+	const onCepSubmit = data => console.log(data)
 
 	useEffect(() => {
 		let _cookie = getCookie('__ds-pec')
@@ -59,13 +59,13 @@ const Checkout: React.FC = () => {
 					<section className="flex-1 flex flex-col gap-4">
 						<ul className="flex gap-2x divide-x divide-gray-300 text-gray-500 mb-3">
 							<li className="px-2">
-								<button type="button" className={`text-xs text-gray-900 font-semibold`}>
+								<button type="button" className={`text-xs p-1 text-gray-900 font-semibold`}>
 									Entrega
 								</button>
 							</li>
 
 							<li className="px-2">
-								<button type="button" className={`text-xs `}>
+								<button type="button" className={`text-xs p-1`}>
 									Pagamento
 								</button>
 							</li>
@@ -75,56 +75,64 @@ const Checkout: React.FC = () => {
 						<div className="mb-3">
 							<div className="text-3xl font-bold py-2">Dados de contato</div>
 
-							<input
-								type="text"
-								className={`w-full p-3 border rounded-md bg-gray-100 focus:outline-none focus:border-gray-400
-								text-gray-700 disabled:opacity-70`}
-								placeholder="E-mail"
-								disabled={false}
-							/>
+							<form onSubmit={handleSubmit(onEmailSubmit)} autoComplete="off">
+								<label htmlFor="email" className="block mb-2">
+									E-mail
+								</label>
+
+								<input
+									type="email"
+									id="email"
+									{...register('email', {
+										required: true
+									})}
+									className={`w-full p-3 border rounded-md bg-gray-100 focus:outline-none
+									focus:border-gray-400 text-gray-700 disabled:opacity-70`}
+									placeholder="E-mail"
+									disabled={false}
+								/>
+							</form>
 						</div>
 
-						{/* ENTREGA */}
+						{/* Entrega */}
 						<div className="mb-3">
 							<div className="text-3xl font-bold py-2">Entrega</div>
 
 							<form onSubmit={handleSubmit(onCepSubmit)} autoComplete="off">
-								<div className="">
-									<label htmlFor="cep" className="block mb-2">
-										Cep
-									</label>
+								<label htmlFor="cep" className="block mb-2">
+									Cep
+								</label>
 
-									<div className="relative">
-										<input
-											type="text"
-											id="cep"
-											{...register('cep', {
-												required: true,
-												pattern: /^([\d]{2})\.?([\d]{3})\-?([\d]{3})/
-											})}
-											className={`w-full py-3 pl-3 pr-40 border rounded-md bg-gray-100 focus:outline-none
+								<div className="relative">
+									<input
+										type="text"
+										id="cep"
+										{...register('cep', {
+											required: true,
+											pattern: /^([\d]{2})\.?([\d]{3})\-?([\d]{3})/
+										})}
+										className={`w-full py-3 pl-3 pr-40 border rounded-md bg-gray-100 focus:outline-none
 											text-gray-700 disabled:opacity-70
 											${errors.cep ? 'border-red-700' : 'focus:border-gray-400'}`}
-											placeholder="CEP"
-											disabled={false}
-										/>
-										{errors.cep && <p className="text-red-700">cep is required.</p>}
+										placeholder="Cep"
+										disabled={false}
+									/>
+									{errors.cep && <p className="text-red-700">cep is required.</p>}
 
-										<a
-											href="http://www.buscacep.correios.com.br/sistemas/buscacep/"
-											className="absolute inset-y-0 right-0 p-3 text-blue-700 hover:text-blue-900
+									<a
+										href="http://www.buscacep.correios.com.br/sistemas/buscacep/"
+										className="absolute inset-y-0 right-0 p-3 text-blue-700 hover:text-blue-900
 											transition-colors"
-											target="_blank"
-											rel="noopener noreferrer"
-										>
-											Não sei meu CEP
-										</a>
-									</div>
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										Não sei meu CEP
+									</a>
 								</div>
 							</form>
 						</div>
 
-						{false && (
+						{true && (
 							<form autoComplete="off">
 								{/* Dados do destinatário */}
 								<div className="mb-3">
