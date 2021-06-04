@@ -67,7 +67,7 @@ const Cart: React.FC = () => {
 								{cartItems.map(product => (
 									<li key={product.id}>
 										<div className="flex gap-4 flex-wrap justify-center">
-											<div className="relative h-48 w-full sm:w-40 border rounded-md bg-gray-200">
+											<div className="relative h-48 w-full sm:w-40 border rounded-md bg-gray-50">
 												<Image
 													src={
 														product.images.length > 0

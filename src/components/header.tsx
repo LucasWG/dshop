@@ -146,8 +146,11 @@ const Header: React.FC = () => {
 									</div>
 								)}
 
-								{cartItems.map(product => (
-									<li className="border-b" key={product.id}>
+								{cartItems.map((product, index) => (
+									<li
+										className={`${cartItems.length !== index + 1 && 'border-b'} mb-2`}
+										key={product.id}
+									>
 										<div className="flex gap-3 mb-3">
 											<div className="relative flex-shrink-0 w-20 h-20 place-self-center">
 												<Image
