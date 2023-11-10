@@ -10,7 +10,7 @@
 	},
 	"dependencies": {
 		"@supabase/supabase-js": "^1.11.17",
-		"axios": "^0.21.2",
+		"axios": "^1.6.0",
 		"correios-brasil": "^2.2.2",
 		"currency.js": "^2.0.4",
 		"date-fns": "^2.22.1",
